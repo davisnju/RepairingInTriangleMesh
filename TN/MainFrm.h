@@ -156,6 +156,7 @@ public:
     afx_msg LRESULT OnUserDbclklabel(WPARAM wParam, LPARAM lParam);
     afx_msg void OnClose();
     afx_msg void OnRectifyH();
+    afx_msg void OnUpdateRectifyH(CCmdUI *pCmdUI);
 };
 
 

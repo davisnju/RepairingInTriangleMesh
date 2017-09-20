@@ -221,6 +221,7 @@ BEGIN
         MENUITEM "缩放模型 (&Z)\tCtrl+Atl+Z",       ID_OSG_SCALE
         MENUITEM SEPARATOR
         MENUITEM "水平校正 (&H)",                   ID_RECTIFY_H
+        MENUITEM "保存节点 (&S)",                   ID_SAVE_NODE
     END
     POPUP "视图(&V)"
     BEGIN
