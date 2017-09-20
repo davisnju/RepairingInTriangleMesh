@@ -98,6 +98,6 @@ public:
     bool RectifyH(osgViewer::Viewer* viewer, const osgGA::GUIEventAdapter & ea);
 
 private:
-    vector<Vec3d> _vec_rectify_H;
+    vector<Vec3> _vec_rectify_H;
     bool _rectify_H;
 };

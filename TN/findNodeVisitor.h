@@ -32,7 +32,9 @@ public:
     // 定义用户查找的节点名  
     void setNameToFind(const std::string &searchName); 
     // 返回节点列表中第一个节点的指针
-    osg::Node* getFirst();  
+    osg::Node* getFirst();
+    // 返回节点列表中最后一个节点的指针
+    osg::Node* getLast();
     // 返回节点列表的一个引用 
     nodeListType& getNodeList() { return foundNodeList; };
     // 返回节点数目

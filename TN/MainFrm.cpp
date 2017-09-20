@@ -51,6 +51,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
     ON_UPDATE_COMMAND_UI(ID_OSG_ADDLABEL, &CMainFrame::OnUpdateOsgAddlabel)
     ON_WM_CLOSE()
     ON_COMMAND(ID_RECTIFY_H, &CMainFrame::OnRectifyH)
+    ON_UPDATE_COMMAND_UI(ID_RECTIFY_H, &CMainFrame::OnUpdateRectifyH)
+    ON_COMMAND(ID_SAVE_NODE, &CMainFrame::OnSaveNode)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -869,4 +871,17 @@ void CMainFrame::OnRectifyH()
     // TODO:  在此添加命令处理程序代码
     CTNView* pView = (CTNView*)this->GetActiveView();
     pView->mOSG->RectifyH();
+}
+
+
+void CMainFrame::OnUpdateRectifyH(CCmdUI *pCmdUI)
+{
+    CTNView* pView = (CTNView*)this->GetActiveView();
+    pCmdUI->SetCheck(pView->mOSG->isRectifingH());
+}
+
+
+void CMainFrame::OnSaveNode()
+{
+    // TODO:  在此添加命令处理程序代码
 }

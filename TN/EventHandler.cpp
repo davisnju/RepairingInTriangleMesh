@@ -1,13 +1,14 @@
 #include "stdafx.h"
-#include "EventHandler.h"
-#include "TNApp.h"
-#include "MainFrm.h"
-#include "TNDoc.h"
-
 #include <osgParticle/FireEffect>
 #include <osg/ShapeDrawable>
 #include <osg/PositionAttitudeTransform>
 #include <osg/Texture2D>
+
+#include "EventHandler.h"
+#include "TNApp.h"
+#include "MainFrm.h"
+#include "TNDoc.h"
+#include "findNodeVisitor.h"
 
 //获取整数a位数
 int getIntNum(int a)
@@ -163,10 +164,6 @@ bool CEventHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAda
 				return scaleSelected(viewer, ea);
 			}
 
-            if (_rectify_H)
-            {
-                RectifyH(viewer, ea);
-            }
         }
         return false;
         // 鼠标释放  
@@ -181,6 +178,10 @@ bool CEventHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAda
             if (addModelValid) return addModel(viewer, ea);
             if (addLabelValid) return addLabel(viewer, ea);
 
+            if (_rectify_H)
+            {
+                RectifyH(viewer, ea);
+            }
         }
     }
     return false;
@@ -797,7 +798,9 @@ bool CEventHandler::removeDragger(osgViewer::Viewer* viewer)
 
 
 			MatrixTransform* trans = new MatrixTransform;
-			trans->setMatrix(mt->getMatrix() * Matrix::scale(selection->getMatrix().getScale()) * Matrix::rotate(selection->getMatrix().getRotate()) * Matrix::translate(selection->getMatrix().getTrans()));
+			trans->setMatrix(mt->getMatrix() * Matrix::scale(selection->getMatrix().getScale()) 
+                             * Matrix::rotate(selection->getMatrix().getRotate()) 
+                             * Matrix::translate(selection->getMatrix().getTrans()));
 			trans->setName("Matrix");
 
 			//Matrix::scale(selection->getMatrix.getScale());
@@ -1104,7 +1107,80 @@ void CEventHandler::RectifyH(bool rectify_H)
     _rectify_H = rectify_H;
 }
 
-void CEventHandler::RectifyH(osgViewer::Viewer* viewer, const osgGA::GUIEventAdapter & ea)
+bool CEventHandler::RectifyH(osgViewer::Viewer* viewer, const osgGA::GUIEventAdapter & ea)
 {
 
+    osgUtil::LineSegmentIntersector::Intersections intersections;
+    if (viewer->computeIntersections(ea, intersections))
+    {
+        const osgUtil::LineSegmentIntersector::Intersection& hit = *intersections.begin();
+
+        bool handleMovingModels = false;
+        const NodePath& nodePath = hit.nodePath;
+        for (NodePath::const_iterator nitr = nodePath.begin();
+             nitr != nodePath.end();
+             ++nitr)
+        {
+            const MatrixTransform* cube = dynamic_cast<const MatrixTransform*>(*nitr);
+            if (cube)
+            {
+                if (cube->getName() == "Matrix") handleMovingModels = true;
+            }
+        }
+
+        Vec3 positionLabel = handleMovingModels ? hit.getLocalIntersectPoint() : hit.getWorldIntersectPoint();
+
+        _vec_rectify_H.push_back(positionLabel);
+    }
+
+    int pn = _vec_rectify_H.size();
+    if (pn > 3)
+    {
+        for (int i = 2; i > -1;--i)
+        {
+            _vec_rectify_H[i] = _vec_rectify_H[pn - 1 - (2 - i)];
+        }
+        _vec_rectify_H.erase(_vec_rectify_H.begin() + 3, _vec_rectify_H.end());
+    }
+
+    pn = _vec_rectify_H.size();
+    if (pn == 3)
+    {
+        Vec3 A(_vec_rectify_H[0] - _vec_rectify_H[1]), B(_vec_rectify_H[1] - _vec_rectify_H[2]);
+        Vec3 n = A ^ B;
+        Quat quat;
+        //根据两个向量计算四元数  
+        quat.makeRotate(n, Z_AXIS);
+
+        Group* root = dynamic_cast<Group*>(viewer->getSceneData());
+        if (!root)
+            return false;
+                
+        CfindNodeVisitor fv("Init Model");
+        root->accept(fv);
+        fv.apply(*root);
+        Node *node = fv.getLast();
+
+        if (node)
+        {
+            MatrixTransform* trans = new MatrixTransform;
+            trans->setName("Matrix");
+            Vec3 node_center = node->getBound().center();
+            float r = node->getBound().radius();
+            trans->setMatrix(Matrix::rotate(quat)
+                             * Matrix::translate(
+                             Vec3(node_center.x() + r * 2, 
+                             node_center.y(), 
+                             38))
+                             );
+            trans->addChild(node);
+            ref_ptr<Group> initGroup = new Group;
+            initGroup->setName("Rectifyed Model");
+            initGroup->addChild(trans);
+            root->addChild(initGroup);
+            _rectify_H = false;
+            return true;
+        }
+    }
+    return false;
 }

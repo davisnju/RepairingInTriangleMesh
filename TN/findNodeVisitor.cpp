@@ -49,5 +49,13 @@ osg::Node* CfindNodeVisitor::getFirst()
     {
         return NULL;
     }
-    return *(foundNodeList.begin());
+    return foundNodeList.front();
+}
+osg::Node* CfindNodeVisitor::getLast()
+{
+    if (foundNodeList.empty())
+    {
+        return NULL;
+    }
+    return foundNodeList.back();
 }
