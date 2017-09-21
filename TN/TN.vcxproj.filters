@@ -66,6 +66,12 @@
     <ClCompile Include="light.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ModelDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClassView.h">
@@ -123,6 +129,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="light.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

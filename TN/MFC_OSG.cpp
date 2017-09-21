@@ -91,14 +91,14 @@ void cOSG::InitOSG(CString initModelName)
     CMainFrame* pFrame = (CMainFrame*)AfxGetApp()->GetMainWnd();
     CTNDoc* doc = (CTNDoc*)pFrame->GetActiveDocument();
     CString dpstr = doc->m_datapath;
-    
+
     // 查重名Label，修改新加的Label名，确保无重名Label
     CTNApp *app = (CTNApp *)AfxGetApp();
     app->nodeNameSet.clear();
     mRoot = new Group;
     mRoot->setName("Root");
     app->insertNodeName(L"Root");
-        
+
     // 查找新场景节点中的Label并加入到nameSet中
     HWND hMainWnd = AfxGetApp()->GetMainWnd()->GetSafeHwnd();
     int initSceneChildNum = newSceneNode->getNumChildren();
@@ -147,7 +147,7 @@ void cOSG::InitOSG(CString initModelName)
     app->insertNodeName(cstr);
 
     //mRoot->addChild(mesh);
-    
+
     //sendBuildString(_T("正在初始化相机..."));
     InitCameraConfig();
 
@@ -160,7 +160,7 @@ void cOSG::InitOSG(CString initModelName)
     mViewer->setCameraManipulator(m_naviManipulator);
 
     fixInitCamera();
-    
+
     // moveCameratoNode(mRoot.get());
 
     // 显示网格
@@ -211,57 +211,72 @@ void cOSG::InitSceneGraph(void)
 
     CString cstr;
 
-    //mRoot->addChild(baseModel.get());
-    //cstr = baseModel->getName().c_str();
-    //app->insertNodeName(cstr);
+    mRoot->addChild(baseModel.get());
+    cstr = baseModel->getName().c_str();
+    app->insertNodeName(cstr);
 
     mRoot->addChild(axixModel.get());
     cstr = axixModel->getName().c_str();
     app->insertNodeName(cstr);
 
-    // insert 初始模型
-    ref_ptr<Group> initNode = new Group;
-    initNode->setName("init Node");
-    CMainFrame* pFrame = (CMainFrame*)AfxGetApp()->GetMainWnd();
-    CTNDoc* doc = (CTNDoc*)pFrame->GetActiveDocument();
-
-    CString path = doc->m_datapath;//L"D:\\OSG\\Production_1\\Data\\";
-    std::list<CString> dirList;
-    // 读取文件列表
-    getJustCurrentDir(path, dirList);
-    // 遍历读取文件并添加到节点
-    std::list<CString>::iterator FLIter;
-    CString modelName;
-    int partCnt = 0;
-    for (FLIter = dirList.begin(); FLIter != dirList.end(); FLIter++)
+    // 添加光源
+    osg::ref_ptr<osg::StateSet> stateset = mRoot->getOrCreateStateSet();
+    stateset->setMode(GL_LIGHTING, osg::StateAttribute::ON);
+    stateset->setMode(GL_LIGHT2, osg::StateAttribute::ON);    // GL_LIGHT0是默认光源  
+    // 设置6个光源 解决光照问题  
+    osg::Vec3d ptLight;
+    osg::Vec3d ptCenter = osg::Vec3d(0, 0, 0);
+    double dDis = 20000.0;
     {
-        cstr = *FLIter;
-        modelName = path + cstr + L"\\" + cstr + L".osgb";
-        ref_ptr<Node> osgbNode = osgDB::readNodeFile(
-            CStringA(modelName).GetBuffer(0));
-        if (osgbNode != NULL)
-        {
-            osgbNode->setName(CStringA(cstr).GetBuffer(0));
-            initNode->addChild(osgbNode);
-            partCnt++;
-        }
+        ptLight = ptCenter + osg::Z_AXIS * dDis;
+        osg::Node *pNodeLight = createLightSource(2, ptLight, -osg::Z_AXIS);
+        pNodeLight->setName("light0");
+        mRoot->addChild(pNodeLight);
     }
-    float r = initNode->getBound().radius();
-    float z = initNode->getBound().center().z() - r;
-    Vec3f positionAdj = Vec3f(0, 0, doc->initModelZ); // adjust zxis position
-    MatrixTransform* trans = new MatrixTransform;
-    trans->setName("Matrix");
-    trans->setMatrix(Matrix::scale(1., 1., 1.) // adjust scale
-                     *Matrix::translate(positionAdj) // adjust position
-                     );
-    trans->addChild(initNode);
-    ref_ptr<Group> initGroup = new Group;
-    initGroup->setName("Init Model");
-    initGroup->addChild(trans);
 
-    mRoot->addChild(initGroup);
-    // cstr.Format(L"初始模型(%d)", partCnt);
-    app->insertNodeName(L"Init Model");
+    // insert 初始模型
+    //ref_ptr<Group> initNode = new Group;
+    //initNode->setName("init Node");
+    //CMainFrame* pFrame = (CMainFrame*)AfxGetApp()->GetMainWnd();
+    //CTNDoc* doc = (CTNDoc*)pFrame->GetActiveDocument();
+
+    //CString path = doc->m_datapath;//L"D:\\OSG\\Production_1\\Data\\";
+    //std::list<CString> dirList;
+    //// 读取文件列表
+    //getJustCurrentDir(path, dirList);
+    //// 遍历读取文件并添加到节点
+    //std::list<CString>::iterator FLIter;
+    //CString modelName;
+    //int partCnt = 0;
+    //for (FLIter = dirList.begin(); FLIter != dirList.end(); FLIter++)
+    //{
+    //    cstr = *FLIter;
+    //    modelName = path + cstr + L"\\" + cstr + L".osgb";
+    //    ref_ptr<Node> osgbNode = osgDB::readNodeFile(
+    //        CStringA(modelName).GetBuffer(0));
+    //    if (osgbNode != NULL)
+    //    {
+    //        osgbNode->setName(CStringA(cstr).GetBuffer(0));
+    //        initNode->addChild(osgbNode);
+    //        partCnt++;
+    //    }
+    //}
+    //float r = initNode->getBound().radius();
+    //float z = initNode->getBound().center().z() - r;
+    //Vec3f positionAdj = Vec3f(0, 0, doc->initModelZ); // adjust zxis position
+    //MatrixTransform* trans = new MatrixTransform;
+    //trans->setName("Matrix");
+    //trans->setMatrix(Matrix::scale(1., 1., 1.) // adjust scale
+    //                 *Matrix::translate(positionAdj) // adjust position
+    //                 );
+    //trans->addChild(initNode);
+    //ref_ptr<Group> initGroup = new Group;
+    //initGroup->setName("Init Model");
+    //initGroup->addChild(trans);
+
+    //mRoot->addChild(initGroup);
+    //// cstr.Format(L"初始模型(%d)", partCnt);
+    //app->insertNodeName(L"Init Model");
 }
 
 void cOSG::InitCameraConfig(void)
@@ -360,9 +375,10 @@ void cOSG::dontAddEffects()
     m_eventHandler->addFireValid = false;
 }
 
-void cOSG::setNewModel(CString modelname)
+void cOSG::setNewModel(CString modelname, CString nodename)
 {
     m_eventHandler->m_modelname = modelname;
+    if (nodename.GetLength() > 0)m_eventHandler->m_nodename = nodename;
     //AfxMessageBox(modelname.GetBuffer());
 }
 
@@ -669,11 +685,11 @@ int cOSG::getNumInRect(ref_ptr<Vec3Array> triPoints, ref_ptr<Vec3Array> rect
 
     int numInRect = 0;
     ref_ptr<Vec3Array> oneTriPoints = new Vec3Array;
-    for (UINT i = 0; i < triNum; i+=3)
+    for (UINT i = 0; i < triNum; i += 3)
     {
         oneTriPoints->push_back(triPoints->at(i));
-        oneTriPoints->push_back(triPoints->at(i+1));
-        oneTriPoints->push_back(triPoints->at(i+2));
+        oneTriPoints->push_back(triPoints->at(i + 1));
+        oneTriPoints->push_back(triPoints->at(i + 2));
         if (isInRect(oneTriPoints, rect))
         {
             numInRect++;
@@ -696,7 +712,7 @@ bool cOSG::isInRect(ref_ptr<Vec3Array> oneTriPoints, ref_ptr<Vec3Array> rect)
         , top = rect->at(0).y()
         , bottom = rect->at(1).y();
     Vec3 triPoint;
-    for (int i = 0; i < 3;i++)
+    for (int i = 0; i < 3; i++)
     {
         triPoint = oneTriPoints->back();
         oneTriPoints->pop_back();
@@ -732,7 +748,7 @@ Node* cOSG::creatMesh(ref_ptr<Vec3Array> triPointsInRect
     // color->push_back(Vec4(1, 0.8, 0, 1));
     // triGeom->setColorArray(color);
     // triGeom->getOrCreateStateSet()->setAttribute(new LineWidth(2), StateAttribute::ON);
-    
+
     geode->addDrawable(triGeom);
 
     return geode.release();

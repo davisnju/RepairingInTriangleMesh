@@ -9,12 +9,13 @@
 #include "TNApp.h"
 #endif
 
+#include <osgGA/StateSetManipulator>
+
 #include "TNDoc.h"
 #include "TNView.h"
-
 #include "MainFrm.h"
 
-#include <osgGA/StateSetManipulator>
+#include "ModelDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -256,6 +257,15 @@ void CTNView::OnOsgAddmd()
         app->editMode = -1;
     }
     mOSG->setEditMode(app->editMode);
+
+    if (app->editMode == EDIT_MODE_ADD_MODEL)
+    {
+        CModelDlg mdlg;
+        if (mdlg.DoModal() == IDOK)
+        {
+            mOSG->setNewModel(mdlg.m_ModelName, mdlg.m_NodeName);
+        }
+    }
 }
 
 void CTNView::OnOsgAddlabel()

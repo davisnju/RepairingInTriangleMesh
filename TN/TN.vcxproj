@@ -19,6 +19,7 @@
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MeshNodeVisitor.cpp" />
     <ClCompile Include="MFC_OSG.cpp" />
+    <ClCompile Include="ModelDlg.cpp" />
     <ClCompile Include="NaviManipulator.cpp" />
     <ClCompile Include="NodeView.cpp" />
     <ClCompile Include="TNApp.cpp" />
@@ -27,12 +28,14 @@
     <ClCompile Include="OutputWnd.cpp" />
     <ClCompile Include="PropertiesWnd.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Utility.cpp" />
     <ClCompile Include="ViewTree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="findNodeVisitor.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="MeshNodeVisitor.h" />
+    <ClInclude Include="ModelDlg.h" />
     <ClInclude Include="TNApp.h" />
     <ClInclude Include="ClassView.h" />
     <ClInclude Include="EventHandler.h" />
@@ -48,6 +51,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Utility.h" />
     <ClInclude Include="ViewTree.h" />
   </ItemGroup>
   <ItemGroup>

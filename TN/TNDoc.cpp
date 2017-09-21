@@ -276,9 +276,15 @@ void CTNDoc::OnFileOpen()
         }
         else if (!::PathFileExists(m_inipath))
         {
-            AfxMessageBox(L"非法项目文件，因为项目附带属性文件不存在！");
+            if (::MessageBox(NULL, L"非法项目文件，因为项目附带属性文件不存在！", L"提示", MB_YESNO)
+                == IDYES)
+            {
+                CFile   file;
+                file.Open(m_inipath, CFile::modeCreate);
+                file.Close();
+            }
         }
-        else
+        //else
         {
             confirmed = true;
         }

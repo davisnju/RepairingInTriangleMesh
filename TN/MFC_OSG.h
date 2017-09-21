@@ -107,7 +107,7 @@ public:
         m_eventHandler->mModelScale = s;
     };
 
-    void setNewModel(CString modelname);
+    void setNewModel(CString modelname, CString nodename = TEXT(""));
     void setModelSize(float s)
     {
         if (abs(s) > 1000000.0)
