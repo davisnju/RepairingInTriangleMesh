@@ -10,8 +10,11 @@
 #include "TNDoc.h"
 #include "findNodeVisitor.h"
 
+#include "Utility.h"
+
+
 //获取整数a位数
-int getIntNum(int a)
+int getNumLength(int a)
 {
     int k = 0;
     while (a)
@@ -285,8 +288,7 @@ bool CEventHandler::addModel(osgViewer::Viewer* viewer, const osgGA::GUIEventAda
     if (!addModelValid)
         return false;
 
-    CString modelstr, rawModelStr, modelname = m_modelname;
-    rawModelStr = modelname + L".osg";
+    CString modelstr, modelname = m_modelname.Left(m_modelname.ReverseFind('.')), rawModelStr = m_modelname;
     modelstr = rawModelStr;
     // 消除重名node
     CTNApp *app = (CTNApp *)AfxGetApp();
@@ -296,7 +298,7 @@ bool CEventHandler::addModel(osgViewer::Viewer* viewer, const osgGA::GUIEventAda
     while (nodeNameSet.find(modelstr) != nodeNameSet.end())
     {
         if (num > 0)
-            modelname = modelname.Left(modelname.GetLength() - getIntNum(num));
+            modelname = modelname.Left(modelname.GetLength() - getNumLength(num));
         num++;
         istr.Format(_T("%d"), num);
         modelname += istr;
@@ -378,7 +380,8 @@ bool CEventHandler::addModel(osgViewer::Viewer* viewer, const osgGA::GUIEventAda
             //trans->addChild(unitSphere);
             Group* newGroup = new Group;
             newGroup->addChild(trans);
-            newGroup->setName("Model");
+            string new_node_name = WChar2Ansi(m_nodename.GetBuffer(m_nodename.GetLength()));
+            newGroup->setName(new_node_name);
             // m_Root->addChild(newNode.get());
             if (root)
             {

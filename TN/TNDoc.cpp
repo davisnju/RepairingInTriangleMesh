@@ -278,7 +278,7 @@ void CTNDoc::OnFileOpen()
         //{
         //    AfxMessageBox(L"非法项目文件，因为项目附带属性文件不存在！");
         //}
-        else
+        //else
         {
             confirmed = true;
         }

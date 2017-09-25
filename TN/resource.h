@@ -85,8 +85,13 @@
 #define IDS_EXPLORER                    305
 #define IDS_EDIT_MENU                   306
 #define IDD_DIALOG_ADDlABELPROP         310
+#define IDD_DIALOG_MODEL                311
 #define IDC_EDIT_PNAME                  1001
 #define IDC_EDIT_PVALUE                 1002
+#define IDC_LIST_ITEM                   1003
+#define IDC_EDIT_NODE_NAME              1004
+#define IDC_EDIT1                       1005
+#define IDC_EDIT_MODEL                  1005
 #define ID_OSG_ADDMD                    12783
 #define ID_OSG_ADDEF                    12784
 #define ID_OSG_PAN                      12785
@@ -111,9 +116,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        311
+#define _APS_NEXT_RESOURCE_VALUE        312
 #define _APS_NEXT_COMMAND_VALUE         12800
-#define _APS_NEXT_CONTROL_VALUE         1002
+#define _APS_NEXT_CONTROL_VALUE         1006
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

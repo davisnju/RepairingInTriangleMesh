@@ -43,6 +43,7 @@ public:
 	Group* m_scaleDraggerGroup;
 
     CString m_modelname;
+    CString m_nodename;
     float m_modelsize;
     float m_firescale;
 
@@ -66,7 +67,8 @@ public:
         mModelScale = false;
         mModelScaling = false;
 
-        m_modelname = "cow";
+        m_modelname = "cow.osg";
+        m_nodename = "Model";
         m_modelsize = 1.0f;
         m_firescale = 0.0f;
         draggerGroupIdx = -1;
