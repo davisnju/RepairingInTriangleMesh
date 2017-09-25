@@ -274,10 +274,10 @@ void CTNDoc::OnFileOpen()
         {
             AfxMessageBox(L"文件不存在！");
         }
-        else if (!::PathFileExists(m_inipath))
-        {
-            AfxMessageBox(L"非法项目文件，因为项目附带属性文件不存在！");
-        }
+        //else if (!::PathFileExists(m_inipath))
+        //{
+        //    AfxMessageBox(L"非法项目文件，因为项目附带属性文件不存在！");
+        //}
         else
         {
             confirmed = true;

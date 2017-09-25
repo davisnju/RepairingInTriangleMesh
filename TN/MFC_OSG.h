@@ -153,7 +153,7 @@ public:
                     ref_ptr<Vec2Array> triTexInRect);
     void RectifyH();
     bool isRectifingH() { return _rectify_H; };
-
+    void addLights();
 private:
 
     CEventHandler* m_eventHandler;

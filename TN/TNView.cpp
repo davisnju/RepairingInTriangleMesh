@@ -475,9 +475,13 @@ void CTNView::loadScene(CString filePath)
     mOSG->fixInitCamera();
     mOSG->moveCameratoNode(newSceneNode.get());
 
+    mOSG->addLights();
+
     // 显示网格
     mOSG->getViewer()->addEventHandler(
         new osgGA::StateSetManipulator(
         mOSG->getViewer()->getCamera()->getOrCreateStateSet()));
     // AfxMessageBox(L"加载成功！");
+
+
 }

@@ -168,21 +168,7 @@ void cOSG::InitOSG(CString initModelName)
         new osgGA::StateSetManipulator(
         mViewer->getCamera()->getOrCreateStateSet()));
 
-
-    // 添加光源
-    osg::ref_ptr<osg::StateSet> stateset = mRoot->getOrCreateStateSet();
-    stateset->setMode(GL_LIGHTING, osg::StateAttribute::ON);
-    stateset->setMode(GL_LIGHT2, osg::StateAttribute::ON);    // GL_LIGHT0是默认光源  
-    // 设置6个光源 解决光照问题  
-    osg::Vec3d ptLight;
-    osg::Vec3d ptCenter = osg::Vec3d(0, 0, 0);
-    double dDis = 20000.0;
-    {
-        ptLight = ptCenter + osg::Z_AXIS * dDis;
-        osg::Node *pNodeLight = createLightSource(2, ptLight, -osg::Z_AXIS);
-        pNodeLight->setName("light0");
-        mRoot->addChild(pNodeLight);
-    }
+    addLights();
 
 }
 
@@ -743,6 +729,25 @@ void cOSG::RectifyH()
 {
     _rectify_H = ~_rectify_H;
     m_eventHandler->RectifyH(_rectify_H);
+}
+
+void cOSG::addLights()
+{
+
+    // 添加光源
+    osg::ref_ptr<osg::StateSet> stateset = mRoot->getOrCreateStateSet();
+    stateset->setMode(GL_LIGHTING, osg::StateAttribute::ON);
+    stateset->setMode(GL_LIGHT2, osg::StateAttribute::ON);    // GL_LIGHT0是默认光源  
+    // 设置6个光源 解决光照问题  
+    osg::Vec3d ptLight;
+    osg::Vec3d ptCenter = osg::Vec3d(0, 0, 0);
+    double dDis = 20000.0;
+    {
+        ptLight = ptCenter + osg::Z_AXIS * dDis;
+        osg::Node *pNodeLight = createLightSource(2, ptLight, -osg::Z_AXIS);
+        pNodeLight->setName("light0");
+        mRoot->addChild(pNodeLight);
+    }
 }
 
 ///////////////////////////////// Render /////////////////////////////////
