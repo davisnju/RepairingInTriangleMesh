@@ -1157,6 +1157,7 @@ bool CEventHandler::RectifyH(osgViewer::Viewer* viewer, const osgGA::GUIEventAda
     {
         Vec3 A(_vec_rectify_H[0] - _vec_rectify_H[1]), B(_vec_rectify_H[1] - _vec_rectify_H[2]);
         Vec3 n = A ^ B;
+        float theta = n * Z_AXIS / n.length();
         Quat quat;
         //根据两个向量计算四元数  
         quat.makeRotate(n, Z_AXIS);

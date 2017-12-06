@@ -1,0 +1,16 @@
+demo_example_test/
+doc/
+old/
+dataset/
+3rd_party/
+3rd_party_other/
+lib_other/
+auxiliary_org/
+run_me_first_for_us.m
+lib/NMFLibrary-master
+lib/SparseGDLibrary-master
+lib/DSK-master
+lib/KMeans_SPD_Matrices
+lib/KSR_SPD_IEEETIP2015
+.dropbox
+!.gitignore

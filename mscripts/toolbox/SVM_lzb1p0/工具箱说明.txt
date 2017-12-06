@@ -1,0 +1,35 @@
+
+%-------------------------------------------------------%
+1 声明
+
+支持向量机Matlab工具箱1.0 
+使用平台 - Matlab6.5
+版权所有：陆振波，海军工程大学
+电子邮件：luzhenbo@yahoo.com.cn
+个人主页：http://luzhenbo.88uu.com.cn
+参数文献：Chih-Chung Chang, Chih-Jen Lin. "LIBSVM: a Library for Support Vector Machines"
+
+Support Vector Machine Matlab Toolbox 1.0
+Platform : Matlab6.5 / Matlab7.0
+Copyright : LU Zhen-bo, Navy Engineering University, WuHan, HuBei, P.R.China, 430033  
+E-mail : luzhenbo@yahoo.com.cn        
+Homepage : http://luzhenbo.88uu.com.cn     
+Reference : Chih-Chung Chang, Chih-Jen Lin. "LIBSVM: a Library for Support Vector Machines"
+
+Solve the quadratic programming problem - "quadprog.m"
+
+%-------------------------------------------------------%
+2 内容
+
+该工具箱包括了二种分类,二种回归,以及一种一类支持向量机算法
+(1) Main_SVC_C.m                --- C_SVC二类分类算法
+(2) Main_SVC_Nu.m               --- Nu_SVC二类分类算法
+(3) Main_SVM_One_Class.m        --- One-Class支持向量机
+(4) Main_SVR_Epsilon.m          --- Epsilon_SVR回归算法
+(5) Main_SVR_Nu.m               --- Nu_SVR回归算法
+
+%-------------------------------------------------------%
+3 使用
+
+(1) 目录下以Main_开头的文件即是主程序文件,直接按快捷键F5运行即可
+(2) 工具箱中所有程序均在Matlab6.5环境中调试通过，不能保证在Matlab其它版本正确运行
