@@ -1,4 +1,6 @@
 
+%%
+
 z_normal = u(idx,:);
 theta = [1,1,1,1,1]'*[0.,0.,0.,0.,0.];
 for i=1:length(u)
