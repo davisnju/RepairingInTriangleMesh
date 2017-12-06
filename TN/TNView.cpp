@@ -462,7 +462,7 @@ void CTNView::loadScene(CString filePath)
     int initSceneChildNum = newSceneNode->getNumChildren();
     for (int i = 0; i < initSceneChildNum; i++)
     {
-        ref_ptr<Group> childi = dynamic_cast<Group*>(newSceneNode->getChild(i));
+        Group* childi = dynamic_cast<Group*>(newSceneNode->getChild(i));
         CString childiName;
         childiName = childi->getName().c_str();
         if (childiName == "Model" || childiName == "Label")
@@ -491,7 +491,7 @@ void CTNView::loadScene(CString filePath)
     mOSG->getViewer()->addEventHandler(
         new osgGA::StateSetManipulator(
         mOSG->getViewer()->getCamera()->getOrCreateStateSet()));
-    // AfxMessageBox(L"加载成功！");
+    //AfxMessageBox(L"加载成功！");
 
 
 }

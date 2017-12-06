@@ -1,8 +1,7 @@
 // MFC_OSG.cpp : implementation of the cOSG class
 //
 #include "stdafx.h"
-#include "MFC_OSG.h"
-#include "findNodeVisitor.h"
+#include <math.h>
 #include <windows.h>
 
 #include <osg/Geometry>
@@ -32,6 +31,10 @@
 #include "MeshNodeVisitor.h"
 
 #include "light.h"
+#include "findNodeVisitor.h"
+
+#include "MFC_OSG.h"
+
 
 cOSG::cOSG(HWND hWnd) :
 m_hWnd(hWnd)
@@ -56,6 +59,7 @@ void cOSG::InitOSG()
 
     // Init different parts of OSG
     //sendBuildString(_T("正在初始化操作器..."));
+
     InitManipulators();
 
     //sendBuildString(_T("正在初始化场景..."));
@@ -75,6 +79,13 @@ void cOSG::InitOSG()
     // 调整初始视角
     fixInitCamera();
 
+    // 显示网格
+    mViewer->addEventHandler(
+        new osgGA::StateSetManipulator(
+        mViewer->getCamera()->getOrCreateStateSet()));
+
+    addLights();
+
 }
 
 void cOSG::InitOSG(CString initModelName)
@@ -87,66 +98,75 @@ void cOSG::InitOSG(CString initModelName)
     //InitSceneGraph();
     ref_ptr<Group> newSceneNode = dynamic_cast<Group*>
         (osgDB::readNodeFile(CStringA(initModelName).GetBuffer(0)));
-    newSceneNode->setName("Init Model");
-    CMainFrame* pFrame = (CMainFrame*)AfxGetApp()->GetMainWnd();
-    CTNDoc* doc = (CTNDoc*)pFrame->GetActiveDocument();
-    CString dpstr = doc->m_datapath;
-
-    // 查重名Label，修改新加的Label名，确保无重名Label
-    CTNApp *app = (CTNApp *)AfxGetApp();
-    app->nodeNameSet.clear();
-    mRoot = new Group;
-    mRoot->setName("Root");
-    app->insertNodeName(L"Root");
-
-    // 查找新场景节点中的Label并加入到nameSet中
-    HWND hMainWnd = AfxGetApp()->GetMainWnd()->GetSafeHwnd();
-    int initSceneChildNum = newSceneNode->getNumChildren();
-    CString childiName;
-    for (int i = 0; i < initSceneChildNum; i++)
+    if (newSceneNode == nullptr)
     {
-        ref_ptr<Group> childi = dynamic_cast<Group*>(newSceneNode->getChild(i));
-        childiName = childi->getName().c_str();
-        if (childiName == "Model" || childiName == "Label")
-        {
-            Transform* trans = childi->getChild(0)->asTransform();
-            Node* node = trans->getChild(0);
-            childiName = node->getName().c_str();
-        }
-        if (app->insertNodeName2(childiName) >= 0)
-        {
-            // 发送消息 更新调试信息
-            ::SendMessage(hMainWnd, WM_USER_ADDMODELNAME,
-                          WPARAM(childiName.GetBuffer(childiName.GetAllocLength()))
-                          , (LPARAM)"Root");
-        }
+        AfxMessageBox(initModelName + "加载失败！");
+        return InitOSG();
     }
+    else
+    {
+        newSceneNode->setName("Init Model");
+        CMainFrame* pFrame = (CMainFrame*)AfxGetApp()->GetMainWnd();
+        CTNDoc* doc = (CTNDoc*)pFrame->GetActiveDocument();
+        CString dpstr = doc->m_datapath;
 
-    float r = newSceneNode->getBound().radius();
-    float z = newSceneNode->getBound().center().z() - r;
-    Vec3f positionAdj = Vec3f(0, 0, doc->initModelZ); // adjust zxis position
-    MatrixTransform* trans = new MatrixTransform;
-    trans->setName("Matrix");
-    trans->setMatrix(Matrix::scale(1., 1., 1.) // adjust scale
-                     *Matrix::translate(positionAdj) // adjust position
-                     );
-    trans->addChild(newSceneNode);
-    ref_ptr<Group> initGroup = new Group;
-    initGroup->setName("Model");
-    initGroup->addChild(trans);
-    mRoot->addChild(initGroup);
+        // 查重名Label，修改新加的Label名，确保无重名Label
+        CTNApp *app = (CTNApp *)AfxGetApp();
+        app->nodeNameSet.clear();
+        mRoot = new Group;
+        mRoot->setName("Root");
+        app->insertNodeName(L"Root");
 
-    Vec3 center(0.0f, 0.0f, 0.0f);
-    float radius = 50.0f;
-    float baseHeight = 0.0f;
-    ref_ptr<Node> baseModel = createBase(Vec3(center.x(), center.y(), baseHeight), radius);
-    baseModel->setName("BASE");
-    //mRoot->addChild(baseModel.get());
-    CString cstr;
-    cstr = baseModel->getName().c_str();
-    app->insertNodeName(cstr);
+        // 查找新场景节点中的Label并加入到nameSet中
+        HWND hMainWnd = AfxGetApp()->GetMainWnd()->GetSafeHwnd();
+        int initSceneChildNum = newSceneNode->getNumChildren();
+        CString childiName;
+        for (int i = 0; i < initSceneChildNum; i++)
+        {
+            ref_ptr<Group> childi = dynamic_cast<Group*>(newSceneNode->getChild(i));
+            childiName = childi->getName().c_str();
+            if (childiName == "Model" || childiName == "Label")
+            {
+                Transform* trans = childi->getChild(0)->asTransform();
+                Node* node = trans->getChild(0);
+                childiName = node->getName().c_str();
+            }
+            if (app->insertNodeName2(childiName) >= 0)
+            {
+                // 发送消息 更新调试信息
+                ::SendMessage(hMainWnd, WM_USER_ADDMODELNAME,
+                              WPARAM(childiName.GetBuffer(childiName.GetAllocLength()))
+                              , (LPARAM)"Root");
+            }
+        }
 
-    //mRoot->addChild(mesh);
+        float r = newSceneNode->getBound().radius();
+        float z = newSceneNode->getBound().center().z() - r;
+        Vec3f positionAdj = Vec3f(0, 0, doc->initModelZ); // adjust zxis position
+        MatrixTransform* trans = new MatrixTransform;
+        trans->setName("Matrix");
+        trans->setMatrix(Matrix::scale(1., 1., 1.) // adjust scale
+                         *Matrix::translate(positionAdj) // adjust position
+                         );
+        trans->addChild(newSceneNode);
+        ref_ptr<Group> initGroup = new Group;
+        initGroup->setName("Model");
+        initGroup->addChild(trans);
+        mRoot->addChild(initGroup);
+
+        Vec3 center(0.0f, 0.0f, 0.0f);
+        float radius = 50.0f;
+        float baseHeight = 0.0f;
+        ref_ptr<Node> baseModel = createBase(Vec3(center.x(), center.y(), baseHeight), radius);
+        baseModel->setName("BASE");
+        //mRoot->addChild(baseModel.get());
+        CString cstr;
+        cstr = baseModel->getName().c_str();
+        app->insertNodeName(cstr);
+
+        //mRoot->addChild(mesh);
+
+    }
 
     //sendBuildString(_T("正在初始化相机..."));
     InitCameraConfig();
@@ -197,11 +217,11 @@ void cOSG::InitSceneGraph(void)
 
     CString cstr;
 
-    mRoot->addChild(baseModel.get());
+    mRoot->addChild(baseModel);
     cstr = baseModel->getName().c_str();
     app->insertNodeName(cstr);
 
-    mRoot->addChild(axixModel.get());
+    mRoot->addChild(axixModel);
     cstr = axixModel->getName().c_str();
     app->insertNodeName(cstr);
 
@@ -219,6 +239,9 @@ void cOSG::InitSceneGraph(void)
         pNodeLight->setName("light0");
         mRoot->addChild(pNodeLight);
     }
+
+    //
+    addTr();
 
     // insert 初始模型
     //ref_ptr<Group> initNode = new Group;
@@ -486,6 +509,24 @@ ref_ptr<Geode> cOSG::createAxis()
     return geode;
 }
 
+osg::ref_ptr<osg::Geode>
+cOSG::createTr(osg::ref_ptr<osg::Vec3Array> vertex,
+osg::ref_ptr<osg::Vec4Array> vertex_color,
+osg::ref_ptr<osg::Vec3Array> normal)
+{
+    osg::ref_ptr<osg::Geode> geode1 = new osg::Geode();
+    osg::ref_ptr<osg::Geometry> geom1 = new osg::Geometry();
+    geom1->setVertexArray(vertex.get());
+    geom1->setColorArray(vertex_color.get());
+    geom1->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geom1->setNormalArray(normal.get());
+    geom1->setNormalBinding(osg::Geometry::BIND_OVERALL);
+    //添加图元，绘图基元为三角形
+    geom1->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES, 0, 3));
+    geode1->addDrawable(geom1.get());
+    return geode1;
+}
+
 void cOSG::stopThread()
 {
     mViewer->setSceneData(NULL);
@@ -498,6 +539,8 @@ void cOSG::rerunThread()
 {
     mViewer->setDone(false);
     Sleep(100);
+    mViewer->stopThreading();
+    Sleep(1);
     mViewer->startThreading();
 }
 
@@ -743,7 +786,7 @@ Node* cOSG::creatMesh(ref_ptr<Vec3Array> triPointsInRect
 
 void cOSG::RectifyH()
 {
-    _rectify_H = ~_rectify_H;
+    _rectify_H = !_rectify_H;
     m_eventHandler->RectifyH(_rectify_H);
 }
 
@@ -764,6 +807,23 @@ void cOSG::addLights()
         pNodeLight->setName("light0");
         mRoot->addChild(pNodeLight);
     }
+}
+
+void cOSG::addTr()
+{
+    //创建顶点数组
+    osg::ref_ptr<osg::Vec3Array> v = new osg::Vec3Array();
+    v->push_back(osg::Vec3(0, 0, 1));
+    v->push_back(osg::Vec3(5, 0, 1));
+    v->push_back(osg::Vec3(0, 10, 1));
+    //设置颜色数组
+    osg::ref_ptr<osg::Vec4Array> vc = new osg::Vec4Array();
+    vc->push_back(osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f));
+    //设置法线数组
+    osg::ref_ptr<osg::Vec3Array> nc = new osg::Vec3Array();
+    nc->push_back(Z_AXIS);
+    osg::ref_ptr<osg::Geode> newTr = createTr(v, vc, nc);
+    mRoot->addChild(newTr);
 }
 
 ///////////////////////////////// Render /////////////////////////////////

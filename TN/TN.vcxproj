@@ -22,6 +22,7 @@
     <ClCompile Include="ModelDlg.cpp" />
     <ClCompile Include="NaviManipulator.cpp" />
     <ClCompile Include="NodeView.cpp" />
+    <ClCompile Include="osg_utils.cpp" />
     <ClCompile Include="TNApp.cpp" />
     <ClCompile Include="TNDoc.cpp" />
     <ClCompile Include="TNView.cpp" />
@@ -36,6 +37,7 @@
     <ClInclude Include="light.h" />
     <ClInclude Include="MeshNodeVisitor.h" />
     <ClInclude Include="ModelDlg.h" />
+    <ClInclude Include="osg_utils.h" />
     <ClInclude Include="TNApp.h" />
     <ClInclude Include="ClassView.h" />
     <ClInclude Include="EventHandler.h" />

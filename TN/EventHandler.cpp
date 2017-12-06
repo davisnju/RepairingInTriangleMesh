@@ -10,8 +10,10 @@
 #include "TNDoc.h"
 #include "findNodeVisitor.h"
 
+#include "osg_utils.h"
 #include "Utility.h"
 
+bool calcNormal(osgViewer::Viewer* viewer);
 
 //获取整数a位数
 int getNumLength(int a)
@@ -63,6 +65,10 @@ bool CEventHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAda
         else if (ea.getKey() == osgGA::GUIEventAdapter::KEY_Q)
         {
             return cancelDragger(viewer);
+        }
+        else if (ea.getKey() == osgGA::GUIEventAdapter::KEY_N)
+        {
+            return calcNormal(viewer);
         }
         return false;
     case osgGA::GUIEventAdapter::PUSH:
@@ -1187,3 +1193,16 @@ bool CEventHandler::RectifyH(osgViewer::Viewer* viewer, const osgGA::GUIEventAda
     }
     return false;
 }
+
+
+bool calcNormal(osgViewer::Viewer* viewer)
+{
+    Group* root = dynamic_cast<Group*>(viewer->getSceneData());
+    if (!root) return false;
+    vector<Vec3> r = analyzeNormals(root);
+
+    return !r.empty();
+}
+
+
+

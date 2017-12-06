@@ -34,7 +34,7 @@ public:
     cOSG(HWND hWnd);
     ~cOSG();
 
-    void InitOSG(CString initModelName);    
+    void InitOSG(CString initModelName);
     void InitOSG();
 
     void InitManipulators(void);
@@ -95,7 +95,8 @@ public:
     void addEffects(bool f);
     void dontAddEffects();
 
-    void rotateModel(bool r) {
+    void rotateModel(bool r)
+    {
         m_eventHandler->mModelRotate = r;
     };
     void transferModel(bool t)
@@ -127,7 +128,7 @@ public:
         }
         m_eventHandler->m_firescale = s;
     };
-    
+
     ref_ptr<Node> createBase(const Vec3& center, float radius);
     ref_ptr<Geode> createAxis();
 
@@ -154,6 +155,10 @@ public:
     void RectifyH();
     bool isRectifingH() { return _rectify_H; };
     void addLights();
+    void addTr();
+    osg::ref_ptr<osg::Geode> createTr(osg::ref_ptr<osg::Vec3Array> vertex,
+                                      osg::ref_ptr<osg::Vec4Array> vertex_color,
+                                      osg::ref_ptr<osg::Vec3Array> normal);
 private:
 
     CEventHandler* m_eventHandler;
