@@ -39,7 +39,7 @@ void CMeshNodeVisitor::apply(Geode &geode)
             }
             else
             {
-                // std::cout << "模型绘制方式不是三角形！！" << std::endl;
+                AfxMessageBox(L"模型绘制方式不是三角形！");
             }
         }
     }

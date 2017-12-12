@@ -37,8 +37,7 @@ END_MESSAGE_MAP()
 // CTNDoc 构造/析构
 
 CTNDoc::CTNDoc()
-{
-}
+{}
 
 CTNDoc::~CTNDoc()
 {}
@@ -73,8 +72,8 @@ BOOL CTNDoc::OnNewDocument()
     {
         TCHAR szKeyValue[MAX_PATH] = { 0 };
         int nValue = 0;
-        ::GetPrivateProfileString(TEXT("Environment"), TEXT("Path"), 
-                                  NULL, szKeyValue, MAX_PATH, 
+        ::GetPrivateProfileString(TEXT("Environment"), TEXT("Path"),
+                                  NULL, szKeyValue, MAX_PATH,
                                   szIniPath);
         //nValue = ::GetPrivateProfileInt(TEXT("Environment"), TEXT("Path"), 0, szIniPath);
         m_datapath = szKeyValue;
@@ -89,12 +88,17 @@ BOOL CTNDoc::OnNewDocument()
         {
             DeleteFile(m_inipath);
         }
-        CFile   file;
-        file.Open(m_datapath + L"默认项目.ini", CFile::modeCreate);
-        file.Close();
+        CreateFile(m_inipath,
+                   GENERIC_READ,
+                   FILE_SHARE_READ,
+                   NULL,
+                   OPEN_EXISTING,        //打开已存在的文件 
+                   FILE_ATTRIBUTE_NORMAL,
+                   NULL);
+
         initModelZ = ::GetPrivateProfileInt(
             TEXT("Environment"), TEXT("initModelZ"), 0, szIniPath);
-        memset(szKeyValue,0, MAX_PATH);
+        memset(szKeyValue, 0, MAX_PATH);
         ::GetPrivateProfileString(TEXT("Scene"), TEXT("initModelName"),
                                   NULL, szKeyValue, MAX_PATH,
                                   szIniPath);
@@ -110,7 +114,7 @@ BOOL CTNDoc::OnNewDocument()
             m_initModelName = L"";
         }
     }
-       
+
     return TRUE;
 }
 
@@ -128,7 +132,7 @@ void CTNDoc::Serialize(CArchive& ar)
     }
     else
     {
-       // 加载
+        // 加载
 
     }
 }
@@ -181,8 +185,8 @@ void CTNDoc::SetSearchContent(const CString& value)
         {
             pChunk->SetTextValue(PKEY_Search_Contents, value, CHUNK_TEXT);
             SetChunkValue(pChunk);
-        }
     }
+}
 }
 
 #endif // SHARED_HANDLERS
