@@ -38,7 +38,7 @@ void main( int args, char* argv[] )
 
 
 	// Octree simplification; feel free to change the simplification threshold.
-	// mytree->simplify( .001f ) ;
+	mytree->simplify( .001f ) ;
 
 #ifdef ALLOW_INTERSECTION
 

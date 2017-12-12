@@ -132,6 +132,7 @@
     <ClInclude Include="ModelReader.h" />
     <ClInclude Include="octree.h" />
     <ClInclude Include="PLYReader.h" />
+    <ClInclude Include="PLYWriter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
