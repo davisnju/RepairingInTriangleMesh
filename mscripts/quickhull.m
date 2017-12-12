@@ -4,6 +4,9 @@
 
 XMIN=-2; XMAX=1; YMIN=-5.5; YMAX=-3;
 
+global CONVHULL_X;
+global CONVHULL_K;
+
 X = vertex_set;
 CONVHULL_K=convhulln(X);
 figure;
@@ -124,6 +127,7 @@ grid on;
 figure;plot(dis_ch)
 figure;histogram(dis_ch);
 %%
+%使用三角面片重心筛选
 dis_tpch=zeros(tn2,1);
 for i=1:tn2    
     vs=[vertex_set(tpis(i,1),:);
@@ -203,13 +207,14 @@ for i=1:length(ch_idx)
        vertex_set(tpis(j,2),:);
        vertex_set(tpis(j,3),:)];
     
-    if isempty(find(model_point_idx==tpis(j,1), 1))...
-        || isempty(find(model_point_idx==tpis(j,1), 1))...
-        || isempty(find(model_point_idx==tpis(j,1), 1))
+    if 1 || isempty(find(model_point_idx==tpis(j,1), 1))...
+        || isempty(find(model_point_idx==tpis(j,2), 2))...
+        || isempty(find(model_point_idx==tpis(j,3), 3))
         model_tp_k=[model_tp_k;j];
         plot3(v([1:end,1],1),v([1:end,1],2),v([1:end,1],3),'b-'); 
     end
 end
+title(['n_tp=' num2str(length(model_tp_k))]);
 grid on;
 %%
 v=[-1.072 -4.591 -14.82];

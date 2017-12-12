@@ -25,11 +25,11 @@ u_dis=distance2plane(vertex_set,[p00,p10,p01]);
 groud_v=vertex_set(u_dis<dis_e,:);
 model_v=vertex_set(u_dis>=dis_e,:);
 
-for i=1:length(model_v)
-    
-    
-    
-end
+% for i=1:length(model_v)
+%     
+%     
+%     
+% end
 
 %%
 %PCA

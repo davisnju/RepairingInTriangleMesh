@@ -33,7 +33,7 @@ for i=1:tn
     id1 = idx_of_vertex(vertex_set,vertexes_i(1,:));
     id2 = idx_of_vertex(vertex_set,vertexes_i(2,:));
     id3 = idx_of_vertex(vertex_set,vertexes_i(3,:));
-    ids = sort([id1,id2,id3]);
+    ids = [id1,id2,id3];
     tps.v1(i)=ids(1);
     tps.v2(i)=ids(2);
     tps.v3(i)=ids(3);
@@ -199,12 +199,16 @@ for i=1:ne
            tp_has_ei=[tp_has_ei;j];
         end
     end
-    if ~isempty(tp_has_ei)
-            for k=1:length(tp_has_ei)
-                tpadjlist{j}=[tpadjlist{j};k];
-            end
+    if length(tp_has_ei)>1
+        l=length(tp_has_ei);
+        adj_matrix=ones(l,1)*tp_has_ei';
+        for k=1:l
+            j=tp_has_ei(k);
+            neighbors_idx=adj_matrix(k,[1:k-1,k+1:end]);
+            tpadjlist{j}=[tpadjlist{j};neighbors_idx'];
+        end
     else
-        assert(0);   %error:存在孤立边
+%         assert(0);   %error:存在孤立三角面片
     end
 end
 %%
