@@ -18,22 +18,10 @@ for i=1:tn2
        vertex_set(tpis(i,3),:)];
    
     v=mean(vs);
-    for j=1:ch_tp_n   
-        dj=distance2tp(v,...
-        [CONVHULL_X(CONVHULL_K(j,1),:);...
-            CONVHULL_X(CONVHULL_K(j,2),:);...
-            CONVHULL_X(CONVHULL_K(j,3),:)]);
-        di(j)=dj;
-    end
+    d_mean=distance_p2ch(v,ch_tp_n);
+    dis_tpch(i)=d_mean;
     
-    d_min=min(di);
-    if d_min<0
-        dis_ch_tp=max(di(di<0));
-    else
-        dis_ch_tp=d_min; 
-    end
-    dis_tpch(i)=dis_ch_tp;
-    
+    plot3tr(vs(:,1), vs(:,2),vs(:,3),'g-');
 end
 
 figure;plot(dis_tpch)

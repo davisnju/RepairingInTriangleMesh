@@ -207,7 +207,7 @@ for i=1:length(ch_idx)
        vertex_set(tpis(j,2),:);
        vertex_set(tpis(j,3),:)];
     
-    if 1 || isempty(find(model_point_idx==tpis(j,1), 1))...
+    if 0 || isempty(find(model_point_idx==tpis(j,1), 1))...
         || isempty(find(model_point_idx==tpis(j,2), 2))...
         || isempty(find(model_point_idx==tpis(j,3), 3))
         model_tp_k=[model_tp_k;j];
@@ -217,12 +217,11 @@ end
 title(['n_tp=' num2str(length(model_tp_k))]);
 grid on;
 %%
-edge_edge_idx=detect_edge(ne,edge_set,tpis(:,:));
+edge_edge_idx=ans;
 edge_edge_n=length(edge_edge_idx);
 for i=1:edge_edge_n
-    e=[vertex_set(edge_set(edge_edge_idx(i),1),:);
-        vertex_set(edge_set(edge_edge_idx(i),2),:)];
-    plot3(e(:,1),e(:,2),e(:,3),'r-'); 
+    e=[vertex_set(edge_set(edge_edge_idx(i),1));
+    plot3('r-'); 
 end
 
 %%
