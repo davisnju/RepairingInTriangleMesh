@@ -2,6 +2,8 @@
 clear
 clc
 
+addpath(genpath('./toolbox'));
+
 load vertex.mat
 % load m.mat;
 

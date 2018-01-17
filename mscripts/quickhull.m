@@ -217,7 +217,7 @@ end
 title(['n_tp=' num2str(length(model_tp_k))]);
 grid on;
 %%
-edge_edge_idx=detect_edge(ne,edge_set,tpis(:,:));
+edge_edge_idx=detect_edge(ne,edge_set,tpis(model_tp_k,:));
 edge_edge_n=length(edge_edge_idx);
 for i=1:edge_edge_n
     e=[vertex_set(edge_set(edge_edge_idx(i),1),:);
