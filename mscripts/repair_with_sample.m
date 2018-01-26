@@ -14,10 +14,12 @@ load cylinder_sample.mat
 
 % load defected cylinder sample
 load defected_cylinder_sample.mat
+load defected_cylinder_sample2.mat
+
 % %%
-% %create new defected cylinder sample
+%create new defected cylinder sample
 % r=5;h=10;BO=[0,0,0];factor=0.8;r=5;vertical_pn=4;circle_pn=6;
-% [vertex,face]=create_cylinder_sample(r,h,BO,factor,vertical_pn,circle_pn);
+% [vertex,face]=create_defected_cylinder_sample(r,h,BO,factor,vertical_pn,circle_pn);
 % save defected_cylinder_sample vertex face
 
 figure;

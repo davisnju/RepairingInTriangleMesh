@@ -74,7 +74,9 @@ for i=1:vertical_pn
         angle_ci_thmax=(ci)*2*pi/circle_pn-pi+(ci==circle_pn);
         angle_ci_idx=find_cp(vertex(level_i_idx,:),angle_ci_thmin,angle_ci_thmax);
         
-        
+        if rand < 0
+            continue;
+        end
         idx=level_i_idx(angle_ci_idx);  
         L=size(vt,1);
         DT=delaunayTriangulation(vertex(idx,1),vertex(idx,2),vertex(idx,3));
