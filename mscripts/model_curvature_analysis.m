@@ -60,35 +60,136 @@ q=quiver3(vertex(:,1),vertex(:,2),vertex(:,3),Umax(1,:)',Umax(2,:)',Umax(3,:)');
 q.Color='r';
 q.ShowArrowHead='off';
 title('max direction of curvature')
+
 %%
 face_n=size(faces,1);
-avgTheta=zeros(face_n,1);
-for i=1:face_n
-    n1=normalv(:,faces(i,1));
-    n2=normalv(:,faces(i,2));
-    n3=normalv(:,faces(i,3));
-    nf=normalf(:,i);
-    avgTheta(i)=mean([vec3theta(nf',n1') vec3theta(nf',n2') vec3theta(nf',n3') ]);
-end
-avgThetaThred=quantile(avgTheta,0.9);
-targetFaceIdx=find(avgTheta<=avgThetaThred);
-figure(10);
+nv=size(vertex,1);
+
+theta_sharp=0.5;
+phi_corner=0.7;
+n_m0=zeros(1,3);
+n_m1=zeros(1,3);
+angle_max=0;
+mintheta=ones(nv,1).*-1;
+maxphi=zeros(nv,1);
+ for i=1:face_n
+    v1=faces(i,1);
+    v2=faces(i,2);
+    v3=faces(i,3);
+    n1=normalv(:,v1);
+    n2=normalv(:,v2);
+    n3=normalv(:,v3);
+%     nf=normalf(:,i);
+    dot12=n1'*n2;
+    dot23=n3'*n2;
+    dot31=n1'*n3;
+    a12=myangle(n1,n2);
+    a23=myangle(n2,n3);
+    a31=myangle(n3,n1);
+    [angle_max, idx]=max([angle_max a12 a23 a31]);
+    switch(idx)            
+        case 2
+            n_m0=n1;n_m1=n2; 
+        case 3
+            n_m0=n2;n_m1=n3; 
+        case 4
+            n_m0=n3;n_m1=n1;             
+        otherwise
+            
+    end
+    if mintheta(v1)<0
+        mintheta(v1)=min([dot12,dot31]);
+    else
+        mintheta(v1)=min([mintheta(v1),dot12,dot31]); 
+    end
+    if mintheta(v2)<0
+        mintheta(v2)=min([dot12,dot23]);
+    else
+        mintheta(v2)=min([mintheta(v2),dot12,dot23]); 
+    end
+    if mintheta(v3)<0
+        mintheta(v3)=min([dot31,dot23]);
+    else
+        mintheta(v3)=min([mintheta(v3),dot31,dot23]); 
+    end
+ end
+ 
+ n_star=cross(n_m0,n_m1);
+ for i=1:
+    
+     maxphi(v1)=
+ end
+ 
+%%
+figure(11);
 clf;
 hold on;
 grid on;
-for i=1:face_n    
-    vs=[vertex(faces(i,1),:);
-       vertex(faces(i,2),:);
-       vertex(faces(i,3),:)];
-       
-    if find(targetFaceIdx==i)        
-            s='g-';
-    else
-            s='r*';
+for i=1:face_n
+    v1=faces(i,1);
+    v2=faces(i,2);
+    v3=faces(i,3);
+    vs=[vertex(v1,:);
+        vertex(v2,:);
+        vertex(v3,:)];
+    
+    plot3tr(vs(:,1), vs(:,2),vs(:,3),'g-');
+    if mintheta(v1)<theta_sharp
+        if maxphi(v1)>phi_corner
+            s='m*';
+        else
+            s='b*';
+        end
+        scatter3(vs(1,1), vs(1,2),vs(1,3),s);
     end
-    plot3tr(vs(:,1), vs(:,2),vs(:,3),s);
+    if mintheta(v2)<theta_sharp
+        if maxphi(v2)>phi_corner
+            s='m*';
+        else
+            s='b*';
+        end
+        scatter3(vs(2,1), vs(2,2),vs(2,3),s);
+    end
+    if mintheta(v3)<theta_sharp
+        if maxphi(v3)>phi_corner
+            s='m*';
+        else
+            s='b*';
+        end
+        scatter3(vs(3,1), vs(3,2),vs(3,3),s);
+    end
 end
 
+% %%
+% face_n=size(faces,1);
+% avgTheta=zeros(face_n,1);
+% for i=1:face_n
+%     n1=normalv(:,faces(i,1));
+%     n2=normalv(:,faces(i,2));
+%     n3=normalv(:,faces(i,3));
+%     nf=normalf(:,i);
+%     avgTheta(i)=mean([vec3theta(nf',n1') vec3theta(nf',n2') vec3theta(nf',n3') ]);
+% end
+% avgThetaThred=quantile(avgTheta,0.9);
+% targetFaceIdx=find(avgTheta<=avgThetaThred);
+% figure(10);
+% clf;
+% hold on;
+% grid on;
+% for i=1:face_n    
+%     vs=[vertex(faces(i,1),:);
+%        vertex(faces(i,2),:);
+%        vertex(faces(i,3),:)];
+%        
+%     if find(targetFaceIdx==i)        
+%             s='g-';
+%     else
+%             s='r*';
+%     end
+%     plot3tr(vs(:,1), vs(:,2),vs(:,3),s);
+% end
+
+%==========================================================================
 % %%
 % %vertex=vertex_set; faces=tpis(model_tp_k,:);
 % 
@@ -248,8 +349,8 @@ end
 % options.normal = [];
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function beta = myangle(u,v);
-
+function beta = myangle(u,v)
+% beta vary [0,2*pi)
 du = sqrt( sum(u.^2) );
 dv = sqrt( sum(v.^2) );
 du = max(du,eps); dv = max(dv,eps);
