@@ -2,7 +2,7 @@ function [vertex,face]=create_cylinder_sample(r, h,BO,factor)
 
 % create_cylinder_sample - compute cylinder sample vertex and delaunay face
 %
-%   [vertex,face]=create_cylinder_sample(radius, height,BO,factor)
+%   [vertex,face]=create_cylinder_sample(r, h,BO,factor)
 %
 %   BO is the center of bottom surface
 %   factor stand for integrity of model

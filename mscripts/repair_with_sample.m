@@ -10,12 +10,22 @@ load cylinder_sample.mat
 % %create new cylinder sample
 % r=5;h=10;BO=[0,0,0];factor=0.65;
 % [vertex,face]=create_cylinder_sample(r,h,BO,factor);
+% save cylinder_sample vertex face
+
+% load defected cylinder sample
+load defected_cylinder_sample.mat
+load defected_cylinder_sample2.mat
+
+% %%
+%create new defected cylinder sample
+% r=5;h=10;BO=[0,0,0];factor=0.8;r=5;vertical_pn=4;circle_pn=6;
+% [vertex,face]=create_defected_cylinder_sample(r,h,BO,factor,vertical_pn,circle_pn);
+% save defected_cylinder_sample vertex face
 
 figure;
 trisurf(face,vertex(:,1),vertex(:,2),vertex(:,3));
 axis([-15 15 -15 15 -5 15]);
 view(0,0);
-save cylinder_sample vertex face
 %%
 %   计算两个三维凸包之间的最短距离
 
