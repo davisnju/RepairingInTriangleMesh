@@ -61,6 +61,7 @@ q.Color='r';
 q.ShowArrowHead='off';
 title('max direction of curvature')
 
+
 %%
 face_n=size(faces,1);
 nv=size(vertex,1);
@@ -115,9 +116,10 @@ maxphi=zeros(nv,1);
  end
  
  n_star=cross(n_m0,n_m1);
- for i=1:
+ 
+ for i=1:1
     
-     maxphi(v1)=
+     maxphi(v1)=1
  end
  
 %%

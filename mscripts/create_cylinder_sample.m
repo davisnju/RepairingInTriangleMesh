@@ -7,7 +7,7 @@ function [vertex,face]=create_cylinder_sample(r, h,BO,factor)
 %   BO is the center of bottom surface
 %   factor stand for integrity of model
 
-%Copyright (c) 2018 Wei Dai
+%   Copyright (c) 2018 Wei Dai
 
 vertex=[];
 k=30;

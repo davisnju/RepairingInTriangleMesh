@@ -22,7 +22,7 @@ tps=table(zeros(tn,1),zeros(tn,1),zeros(tn,1),zeros(tn,3));
 %vertex/edge/normal
 tps.Properties.VariableNames = {'v1','v2','v3','n'};
 
-%%
+%
 % vertex_set = [];
 % for i = 1:nx
 %     if idx_of_vertex(vertex_set,vertexes(i,:)) < 0
@@ -201,7 +201,9 @@ for i=1:tn2
     end
 end
 grid on;
-
+%%
+vertex=vertex_set;
+face=tpis;
 %%
 % calculate sub model vertex,face
 ln=length(vertex_ds_label);

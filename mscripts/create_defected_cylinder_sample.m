@@ -8,7 +8,7 @@ function [vertex,face]=create_defected_cylinder_sample(r, h,BO,factor,vertical_p
 %   vertical_pn is num of vertical part
 %   circle_pn is num of part the circle been decomposed
 
-%Copyright (c) 2018 Wei Dai
+%   Copyright (c) 2018 Wei Dai
 vertex=[];
 h=double(h);
 k=30;
