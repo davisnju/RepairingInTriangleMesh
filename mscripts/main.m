@@ -15,6 +15,9 @@ addpath(genpath('./toolbox'));
 
 load defected_cylinder_sample2.mat
 
+vertex_raw=vertex;
+face_raw=face;
+
 vertexes=vertex;
 tn=size(face,1);
 
@@ -232,6 +235,60 @@ for i=1:tn
     sub_model{lid}{2}=[sub_model{lid}{2};
         vertex_sub_idx(id1,2),vertex_sub_idx(id2,2),vertex_sub_idx(id3,2)];
 end
+
+%%
+%   more complex sample
+vertex_sub=[];
+for i=1:ln
+    vertex_sub=sub_model{i}{1};
+    face_sub=sub_model{i}{2};
+    
+    for k=1:3
+        %   add g
+        face_n=size(face_sub,1);
+        for t=1:face_n
+            T=vertex_sub(face_sub(t,:),:);
+            [~,r,z]=cart2pol(T(:,1),T(:,2),T(:,3));
+            flag=0;
+            for j=1:3
+                if r(j)<5 && (z(j) > 0 && z(j) < 10)
+                    flag=1;
+                    break
+                end
+            end
+            if flag
+                g=[sum(T(:,1)),sum(T(:,2)),sum(T(:,3))]./3;
+                vertex_sub=[vertex_sub;g];
+            end
+        end
+        %   update face
+        DT=delaunayTriangulation(vertex_sub(:,1),vertex_sub(:,2),vertex_sub(:,3));
+        [K,~] = convexHull(DT);
+        vertex_sub=DT.Points(:,:);
+        face_sub=K;
+    end
+    sub_model{i}{1}=vertex_sub;
+    sub_model{i}{2}=face_sub;
+end
+
+vt=[];
+face_c=[];
+for i=1:ln    
+    L=size(vt,1);
+    vt=[vt;sub_model{i}{1}];
+    face_c=[face_c;sub_model{i}{2}+L];
+end
+vertex_c=vt;
+%%
+%model curvature analysis
+[normalv_c,normalf_c]=compute_normal(vertex_c,face_c);
+figure;
+quiver3(vertex_c(:,1),vertex_c(:,2),vertex_c(:,3),...
+    normalv_c(1,:)',normalv_c(2,:)',normalv_c(3,:)');
+hold on;
+trisurf(face_c,vertex_c(:,1),vertex_c(:,2),vertex_c(:,3));
+axis([-15 15 -15 15 -5 15]);
+view(0,0);
 %%
 % divide and conquer
 for sub_i=1:1

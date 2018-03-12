@@ -1,14 +1,20 @@
 %model curvature analysis
+vertex_c=vertex;face_c=face;
+%%
+vertex=vertex_c;
+face=face_c;
 faces=face;
+% faces=face;
 [normalv,normalf]=compute_normal(vertex,faces);
 %%
 
 figure;
-quiver3(vertex(:,1),vertex(:,2),vertex(:,3),normalv(1,:)',normalv(2,:)',normalv(3,:)');
+% quiver3(vertex(:,1),vertex(:,2),vertex(:,3),normalv(1,:)',normalv(2,:)',normalv(3,:)');
 hold on;
 trisurf(face,vertex(:,1),vertex(:,2),vertex(:,3));
 axis([-15 15 -15 15 -5 15]);
 view(0,0);
+grid off
 
 
 %%
@@ -19,17 +25,32 @@ options.name = name; % useful for displaying
 options.curvature_smoothing = 2;
 options.verb = 0;
 [Umin,Umax,Cmin,Cmax,Cmean,Cgauss,Normal] = compute_curvature(vertex,faces,options);
+
+Crms=sqrt((Cmin.^2+Cmax.^2)./2);
+Cabs=abs(Cmin)+abs(Cmax);
+
 % display
 figure;
 clf;
-subplot(1,2,1);
+subplot(2,2,1);
 options.face_vertex_color = perform_saturation(Cgauss,1.2);
 plot_mesh(vertex,faces, options); shading interp; colormap jet(256);
 title('Gaussian curvature');
-subplot(1,2,2);
-options.face_vertex_color = perform_saturation(abs(Cmin)+abs(Cmax),1.2);
+
+subplot(2,2,2);
+options.face_vertex_color = perform_saturation(Cmean,1.2);
 plot_mesh(vertex,faces, options); shading interp; colormap jet(256);
-title('Total curvature');
+title('Mean curvature');
+
+subplot(2,2,3);
+options.face_vertex_color = perform_saturation(Crms,1.2);
+plot_mesh(vertex,faces, options); shading interp; colormap jet(256);
+title('RMS curvature');
+
+subplot(2,2,4);
+options.face_vertex_color = perform_saturation(Cabs,1.2);
+plot_mesh(vertex,faces, options); shading interp; colormap jet(256);
+title('Absolute curvature');
 %
 figure;
 clear options;

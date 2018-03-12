@@ -1,23 +1,26 @@
 %%show labeled meshes, which label is produced by using watershed algorithm 
 %
+
+%%
+
 figure;
 clf;
 subplot(2,2,1);
 options.face_vertex_color = perform_saturation(double(Lgauss),1.2);
-plot_mesh(vertex,face, options); shading flat; colormap jet(256);
-title('label using Gauss curvature');
+plot_mesh(vertex_seg,face_seg, options); shading flat; colormap jet(256);
+title('Gaussian curvature');
 subplot(2,2,2);
 options.face_vertex_color = perform_saturation(double(Lmean),1.2);
-plot_mesh(vertex,face, options); shading flat; colormap jet(256);
-title('label using Mean curvature');
+plot_mesh(vertex_seg,face_seg, options); shading flat; colormap jet(256);
+title('Mean curvature');
 subplot(2,2,3);
 options.face_vertex_color = perform_saturation(double(Lrms),1.2);
-plot_mesh(vertex,face, options); shading flat; colormap jet(256);
-title('label using RMS curvature');
+plot_mesh(vertex_seg,face_seg, options); shading flat; colormap jet(256);
+title('RMS curvature');
 subplot(2,2,4);
 options.face_vertex_color = perform_saturation(double(Labs),1.2);
-plot_mesh(vertex,face, options); shading flat; colormap jet(256);
-title('label using ABS curvature');
+plot_mesh(vertex_seg,face_seg, options); shading flat; colormap jet(256);
+title('Absolute curvature');
 
 %%
 % face_n=size(face,1);

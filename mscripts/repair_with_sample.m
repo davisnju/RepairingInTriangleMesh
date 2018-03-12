@@ -6,11 +6,19 @@ clc
 addpath(genpath('./toolbox'));
 % load cylinder sample
 load cylinder_sample.mat
-% %%
-% %create new cylinder sample
-% r=5;h=10;BO=[0,0,0];factor=0.65;
-% [vertex,face]=create_cylinder_sample(r,h,BO,factor);
-% save cylinder_sample vertex face
+%% create new cylinder sample
+r=5;h=10;BO=[0,0,0];factor=0.8;
+[vertex,face]=create_cylinder_sample(r,h,BO,factor);
+
+figure;
+% quiver3(vertex(:,1),vertex(:,2),vertex(:,3),normalv(1,:)',normalv(2,:)',normalv(3,:)');
+hold on;
+trisurf(face,vertex(:,1),vertex(:,2),vertex(:,3));
+axis([-15 15 -15 15 -5 15]);
+view(0,0);
+grid off
+save cylinder_sample2 vertex face
+%%
 
 % load defected cylinder sample
 load defected_cylinder_sample.mat

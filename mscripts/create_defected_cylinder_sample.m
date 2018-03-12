@@ -61,8 +61,6 @@ end
 vertex=[vertex;tv];
 
 vt=[];
-idx=[];
-L=size(vt,1);
 face=[];
 for i=1:vertical_pn
     level_i_zmin=BO(3)+(i-1)*h/vertical_pn;

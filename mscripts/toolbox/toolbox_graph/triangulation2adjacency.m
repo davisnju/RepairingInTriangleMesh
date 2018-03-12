@@ -7,7 +7,7 @@ function A = triangulation2adjacency(face,vertex)
 % or for getting a weighted graph
 %   A = triangulation2adjacency(face,vertex);
 %
-%   Copyright (c) 2005 Gabriel Peyré
+%   Copyright (c) 2005 Gabriel Peyr?
 
 
 [tmp,face] = check_face_vertex([],face);
@@ -39,3 +39,4 @@ for i=1:nface
 end 
 % make sure that all edges are symmetric
 A = max(A,A');
+end

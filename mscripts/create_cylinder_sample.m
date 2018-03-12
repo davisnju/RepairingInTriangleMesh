@@ -20,7 +20,7 @@ bv=[x;y;z]';
 tv=[x;y;z+h]';
 vertex=[vertex;bv;];
 n=20;
-m=50;%0,1,..,19
+m=20;%0,1,..,19
 hd=0;
 
 m2=floor(m*factor)-1;%16, gap vertex can fill 1 level

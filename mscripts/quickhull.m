@@ -2,16 +2,26 @@
 %quickhull
 %Barber, C. B., D.P. Dobkin, and H.T. Huhdanpaa, ¡°The Quickhull Algorithm for Convex Hulls,¡± ACM Transactions on Mathematical Software, Vol. 22, No. 4, Dec. 1996, p. 469-483.
 
+X = vertex;
+K = convhull(X);
+figure;
+trisurf(K,X(:,1),X(:,2),X(:,3));
+% axis([XMIN XMAX YMIN YMAX])
+axis([-15 15 -15 15 -5 15]);
+view(2)          
+title(['surface facets']);
+%%
 XMIN=-2; XMAX=1; YMIN=-5.5; YMAX=-3;
 
 global CONVHULL_X;
 global CONVHULL_K;
 
-X = vertex_set;
+X = vertex;
 CONVHULL_K=convhulln(X);
 figure;
 trisurf(CONVHULL_K,X(:,1),X(:,2),X(:,3));
-axis([XMIN XMAX YMIN YMAX])
+% axis([XMIN XMAX YMIN YMAX])
+axis([-15 15 -15 15 -5 15]);
 view(2)          
 title(['all vertexes']);
 
