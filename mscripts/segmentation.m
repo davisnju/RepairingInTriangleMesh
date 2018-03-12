@@ -12,7 +12,7 @@ options.name = name; % useful for displaying
 options.curvature_smoothing = 2;
 options.verb = 0;
 [Umin,Umax,Cmin,Cmax,Cmean,Cgauss,Normal] = compute_curvature(vertex_seg,face_seg,options);
-% adj_list
+% adj matrix
 A = triangulation2adjacency(face_seg,vertex_seg);
 adj_list = adjmatrix2list(A);
 % Cgauss,Cmean,Crms,Cabs
