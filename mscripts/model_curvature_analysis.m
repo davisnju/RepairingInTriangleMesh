@@ -9,13 +9,16 @@ faces=face;
 %%
 
 figure;
-% quiver3(vertex(:,1),vertex(:,2),vertex(:,3),normalv(1,:)',normalv(2,:)',normalv(3,:)');
+quiver3(vertex(:,1),vertex(:,2),vertex(:,3),normalv(1,:)',normalv(2,:)',normalv(3,:)');
 hold on;
 trisurf(face,vertex(:,1),vertex(:,2),vertex(:,3));
-axis([-15 15 -15 15 -5 15]);
+% axis([-15 15 -15 15 -5 15]);
 view(0,0);
 grid off
 
+xlabel('x');
+ylabel('y');
+zlabel('z');
 
 %%
 name='cylinder';
