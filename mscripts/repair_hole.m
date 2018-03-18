@@ -97,12 +97,14 @@ front_idx=v_hb_idx;
 theta_thred1=deg2rad(75);
 theta_thred2=deg2rad(135);
 alpha=1;   %% param
-rotate_face=0;
+point_merge_th_factor=0.1;
+rotate_face=1;
 front_size=size(front_idx,1);
 loop_i=1;
 % while front_size>0
 %     loop_i=loop_i+1;
-for loop_i=1:84
+for loop_i=1:1
+% for loop_i=1:84
 % for loop_i=1:1
     loop
 end % while(1)

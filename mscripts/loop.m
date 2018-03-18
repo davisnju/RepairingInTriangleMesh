@@ -3,14 +3,17 @@ disp(['loop ' num2str(loop_i) ':']);
 %% get min theta and vid
 min_theta=ones(border_num,1)*2*pi;% min theta for each border
 min_theta_vi=zeros(border_num,1);% vertex idx with min theta for each border
-for i=1:border_num
+for i=1:size(border_l,1)
     bli=border_l(i);
     v_bli=find(hv_u_matrix(:,1)==bli);%vertex on border Label=lli
     vn_bli=size(v_bli,1);
     front_size=vn_bli;
     if vn_bli<3
+        border_l(border_l==bli)=[];
         continue;
     end
+    normal_border=zeros(vn_bli,3);
+    theta_border=zeros(vn_bli,1);
     for vi=1:vn_bli
         v1idx=v_bli(vi);
         v1=vertex_m(v1idx,:);
@@ -24,53 +27,55 @@ for i=1:border_num
         vec12=v2-v1;
         vec13=v3-v1;
         %==== hole on left along border ==========
-        %         % adj facet
-        %         v1_adj_facet_idx=vertex_adj_face{v1idx};
-        %         v1_adj_facet=face_m(v1_adj_facet_idx,:);
-        %         v12face_idx=find(v1_adj_facet(:,1)==v2idx);
-        %         v12face_idx=[v12face_idx;find(v1_adj_facet(:,2)==v2idx)];
-        %         v12face_idx=[v12face_idx;find(v1_adj_facet(:,3)==v2idx)];
-        %         v12face=v1_adj_facet(v12face_idx,:);
-        %         vx=setdiff(v12face,[v1idx v2idx]);
-        %         n=normal4plane(vertex_m(v12face(1,1),:),vertex_m(v12face(1,2),:),vertex_m(v12face(1,3),:));
-        %         flip=n*normal4plane(v1,v2,vx)'<0;
-        %         if flip
-        %             [v2,v3]=exchange(v2,v3);
-        %         end
-        %         %         neighbor_idx2=adj_list_t{adj_edge_vertex(1)};
-        %         %         v21nidx=intersect(neighbor_idx2,neighbor_idx);
-        %         %         v21n=vertex_m(v21nidx(ol(v21nidx)==1),:);
-        %         %         v21n=v21n(1,:);
-        %         %         flip=vec3ang_with_dir(vec12,v21n-v1,normalv(:,v_bli(vi)))<...
-        %         %             vec3ang_with_dir(vec12,vec13,normalv(:,v_bli(vi)))
-        %         %         flip=cross(vec12,vec13)*normalv(:,v_bli(vi))<0
-        %         %========================================
-        %         vec12=v2-v1;
-        %         vec13=v3-v1;
-        %         n=cross(vec12,vec13);
-        %         theta_i=vec3ang_with_dir(vec12, vec13,n);
-        
-        theta_i=vec3theta(vec12,vec13);
-        vec12=vec12/norm(vec12);
-        vec13=vec13/norm(vec13);
-        vp=vec12+vec13;
-        flag=vec3theta(vp,vec13)<pi/2;
-        if flag
-            theta_i=2*pi-theta_i;
+        % adj facet
+        v1_adj_facet_idx=vertex_adj_face{v1idx};
+        v1_adj_facet=face_m(v1_adj_facet_idx,:);
+        v12face_idx=find(v1_adj_facet(:,1)==v2idx);
+        v12face_idx=[v12face_idx;find(v1_adj_facet(:,2)==v2idx)];
+        v12face_idx=[v12face_idx;find(v1_adj_facet(:,3)==v2idx)];
+        v12face=v1_adj_facet(v12face_idx,:);
+        vx=setdiff(v12face,[v1idx v2idx]);
+        n=normal4plane(vertex_m(v12face(1,1),:),vertex_m(v12face(1,2),:),vertex_m(v12face(1,3),:));
+        flip=n*normal4plane(v1,v2,vertex_m(vx,:))'>0;
+        if flip
+            [v2,v3]=exchange(v2,v3);
         end
-        
-        %         v1_adj_facet_idx=vertex_adj_face{v1idx};
-        %         v1_adj_facet=face_m(v1_adj_facet_idx,:);
-        %         vafn=size(v1_adj_facet,1);
-        %         alpha=0;
-        %         for fi=1:vafn
-        %             vafi=v1_adj_facet(i,:);
-        %             vnidx=setdiff(vafi,v1idx);
-        %             vn=vertex_m(vnidx,:);
-        %             alpha_i=vec3theta(vn(1,:)-v1,vn(2,:)-v1);
-        %             alpha=alpha+alpha_i;
-        %         end
-        %         theta_i=pi-alpha;
+        vec12=v2-v1;
+        vec13=v3-v1;
+        normal_border(vi,:)=cross(vec12,vec13);
+        theta_border(vi)=vec3theta(vec12,vec13);
+    end
+    normal_border_a=mean(normal_border);
+    
+    for vi=1:vn_bli
+        v1idx=v_bli(vi);
+        v1=vertex_m(v1idx,:);
+        %get adj edge to vi
+        neighbor_idx=adj_list_t{v_bli(vi)};
+        adj_edge_vertex=neighbor_idx(isborder(neighbor_idx)==1);
+        v2idx=adj_edge_vertex(1);
+        v2=vertex_m(v2idx,:);
+        v3idx=adj_edge_vertex(2);
+        v3=vertex_m(v3idx,:);
+        vec12=v2-v1;
+        vec13=v3-v1;
+        %==== hole on left along border ==========
+        % adj facet
+        v1_adj_facet_idx=vertex_adj_face{v1idx};
+        v1_adj_facet=face_m(v1_adj_facet_idx,:);
+        v12face_idx=find(v1_adj_facet(:,1)==v2idx);
+        v12face_idx=[v12face_idx;find(v1_adj_facet(:,2)==v2idx)];
+        v12face_idx=[v12face_idx;find(v1_adj_facet(:,3)==v2idx)];
+        v12face=v1_adj_facet(v12face_idx,:);
+        vx=setdiff(v12face,[v1idx v2idx]);
+        n=normal4plane(vertex_m(v12face(1,1),:),vertex_m(v12face(1,2),:),vertex_m(v12face(1,3),:));
+        flip=n*normal4plane(v1,v2,vertex_m(vx,:))'>0;
+        if flip
+            [v2,v3]=exchange(v2,v3);
+        end
+        vec12=v2-v1;
+        vec13=v3-v1;
+        theta_i=vec3ang_with_dir(vec12, vec13,normal_border_a);
         
         if theta_i<min_theta(i)
             min_theta(i)=theta_i;
@@ -190,7 +195,7 @@ for i=1:border_num
         vp_rot=v1+d*n2(:)';
         
         % check vertex merge
-        if(check_merge(vp_rot,vertex_m,isborder==1,edge_len_mean))
+        if(check_merge(vp_rot,vertex_m,isborder==1,edge_len_mean*point_merge_th_factor))
             % get idx
             merge_point();
         else
@@ -321,7 +326,7 @@ for i=1:border_num
             [vp1_rot,vp2_rot]=exchange(vp1_rot,vp2_rot);
         end
         % check vertex merge
-        if(check_merge(vp1_rot,vertex_m,isborder==1,edge_len_mean))
+        if(check_merge(vp1_rot,vertex_m,isborder==1,point_merge_th*edge_len_mean))
             % get idx
             merge_point();
             

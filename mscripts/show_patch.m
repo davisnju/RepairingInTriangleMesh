@@ -7,6 +7,7 @@ view([-160 40])
 hold on;
 trisurf(face_patch,vertex_m(:,1),vertex_m(:,2),vertex_m(:,3));
 color=['r','g','b','y','m','c','w','k'];
+border_num=size(border_l,1);
 for i=1:border_num
     bli=border_l(i);
     p=hv_u_matrix(:,1);
