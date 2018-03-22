@@ -4,18 +4,20 @@
 % load m201803172126.mat
 % load m201803172200.mat
 % load 201803172339.mat
+load m03222145.mat
 % show_patch
 li=loop_i;
-for loop_i=li+1:197
-% for loop_i=1:1
+for loop_i=li+1:511
+    % for loop_i=1:1
     loop
 end % while(1)
+show_patch
 
 %%
 loop_i=loop_i+1;
 loop
 
-% show_patch
+show_patch
 
 %%
 figure(25)

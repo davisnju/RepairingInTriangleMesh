@@ -2,8 +2,6 @@
 % clc;
 % addpath(genpath('./toolbox'));
 % load('m201803122238.mat');
-create_ballsurface_sample
-preprocess
 %% repair hole
 adj_list_t=adj_list;
 vertex_m=vertex_c;
@@ -40,7 +38,7 @@ end
 
 isborder=zeros(nv,1);
 isborder(v_hb_idx)=1;
-isborder_raw=isborder;
+
 v_hb_num=length(v_hb_idx);
 
 % v_hb_idx_2=v_hb_idx;
@@ -142,7 +140,7 @@ for i=1:neb
     end
 end
 
-%% organization of border
+% organization of border
 border_vid=cell(border_num,1);
 for i=1:border_num
     bli=border_l(i);
@@ -155,42 +153,22 @@ for i=1:border_num
     listE=e;
     while ~isempty(queueE)
         idx=find(queueE(:,1)==e(2));
-        e2list=queueE(idx,:);
-        if isempty(e2list)
+        if isempty(idx)
             %check border
             if listE(1,1) ~= listE(end,2)
-                disp('err 0');
+                disp('err');
                 break;
-            else
-                bv=listE(:,1);
             end
         else
-            e2=e2list(1,:);
-            e=e2;
-            if length(idx)==1
-                queueE(idx,:)=[];
-            end
-            listE=[listE;e];
-            if isempty(queueE)
-                %check border
-                if listE(1,1) ~= listE(end,2)
-                    disp('err 0');
-                else
-                    bv=listE(:,1);
-                end
-                break;
-            end
-        end
+            e2=idx(1);
+        end        
     end
-    
-    border_vid{i}=bv;
 end
 %% the advancing front mesh generation
 %
 clc
 figure(25)
 clf;
-show_patch
 
 face_patch=[];
 vertex_patch=[];
@@ -204,36 +182,27 @@ rotate_face=0;
 front_size=size(front_idx,1);
 loop_i=1;
 while front_size>0
-    % for loop_i=1:26
-%     for loop_i=1:100
+    % for loop_i=1:1
     % for loop_i=1:84
     % for loop_i=1:1
     loop
-    
-    front_size=0;
-    for i=1:border_num
-        front_size=front_size+length(border_vid{i});
-    end
     loop_i=loop_i+1;
 end % while(1)
-show_patch
+
 %%
 % figure(25)
 % hold off
 % trisurf(face_m,vertex_m(:,1),vertex_m(:,2),vertex_m(:,3));
-% view(3)
+% % view([-180 15])
 % hold on;
 % show_patch
 %% show Hole Boundary
 figure(23);
 hold off
 trisurf(face_m,vertex_m(:,1),vertex_m(:,2),vertex_m(:,3));
-axis([-2 2 -2 2 -2 2]);
-grid off
 view(3)
 hold on;
 color=['g','r','b','y','m','c','w','k'];
-border_num=length(border_l);
 for i=1:border_num
     bli=border_l(i);
     v_bli=find(hv_u.p==bli);
@@ -251,9 +220,11 @@ for i=1:border_num
     end
 end
 
-X=vertex_m(isborder==1,1);
-Y=vertex_m(isborder==1,2);
-Z=vertex_m(isborder==1,3);
+X=vertex(isborder==1,1);
+Y=vertex(isborder==1,2);
+Z=vertex(isborder==1,3);
 scatter3(X,Y,Z,color(mod(find(border_l==bli),8)+1),'filled');
 
+% axis([-15 15 -15 15 -5 15]);
+grid off
 

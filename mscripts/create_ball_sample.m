@@ -75,11 +75,13 @@ face_outside(idx,:)=[];
 vertex=[vertex_inside;vertex_outside];
 face=[face_inside;face_outside+size(vertex_inside,1)];
 
-% show_mesh(face,vertex);
+show_mesh(face,vertex);
 
+% load('ball_sample.mat')
 l1=size(vertex_inside,1);
 [num,~]=sort(unique(vertex_inside(:,3)));
-top_th=num( find(num>4.6, 1 )-1);
+top_th=num( find(num>4.89, 1 )-1);
+% top_th=max(num)-0.1;
 idx1=[];
 for i=1:l1
     v_in=vertex_inside(i,:);
@@ -91,11 +93,11 @@ for i=1:l1
 %         face=[face;i idx(1)+l1 idx(2)+l1;];
     end
 end
-% show_mesh(face,vertex);
 
 l2=size(vertex_outside,1);
 [num,~]=sort(unique(vertex_outside(:,3)));
-top_th=num( find(num>5.671, 1 )-1);
+top_th=num( find(num>5.866, 1 )-1);
+% top_th=max(num)-0.1;
 idx2=[];
 for i=1:l2
     v_out=vertex_outside(i,:);
@@ -107,7 +109,6 @@ for i=1:l2
 %         face=[face;i+l1 idx(1) idx(2);];
     end
 end
-% show_mesh(face,vertex);
 vertex_t=vertex([idx1 idx2+l1],:);
 
 DT=delaunayTriangulation(vertex_t(:,1),vertex_t(:,2),vertex_t(:,3));
@@ -125,7 +126,7 @@ for i=1:face_between_len
     end    
 end
 face_between(idx,:)=[];
-% show_mesh(face_between,vertex_between);
+show_mesh(face_between,vertex_between);
 
 face_between_t=face_between;
 

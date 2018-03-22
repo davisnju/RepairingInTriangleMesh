@@ -68,13 +68,13 @@ if vpp==v1p
         isborder(v3idx)=0;        
         %search from vpn2
         border_label=vp_idx;
-        border_vertex_idx=[vpn2idx; vp_idx; v2idx;];
+        border_vertex_idx=[v2idx; vp_idx; vpn2idx;];
         while vpn2idx ~= v2idx            
             % get vn2
-            v2idx_ob=find(v_bli==v2idx);
-            v2idx=v_bli(mod(v2idx_ob-2,vn_bli)+1);
+            vp_idx_ob=find(v_bli==vpn2idx);
+            vpn2idx=v_bli(mod(vp_idx_ob-2,vn_bli)+1);
             if vpn2idx ~= v2idx
-                 border_vertex_idx=[border_vertex_idx;v2idx];
+                 border_vertex_idx=[border_vertex_idx;vpn2idx];
             else
                 break;
             end
@@ -127,13 +127,13 @@ if vpp==v1p
         end
         %search from v2
         border_label=vpn2idx;
-        border_vertex_idx=[vpn2idx; vp_idx; v2idx;];
+        border_vertex_idx=[vpn2idx; vp_idx;  v2idx ];
         while vpn2idx ~= v2idx            
             % get vn1 vn2
-            v2idx_ob=find(v_bli==v2idx);
-            v2idx=v_bli(mod(v2idx_ob-2,vn_bli)+1);
-            if vpn2idx ~= v2idx   
-                border_vertex_idx=[border_vertex_idx;v2idx];
+            [vpn1idx,vpn2idx]=get_neighbor(vpn2idx,vpp,adj_list_m,isborder,...
+                vertex_m,vertex_adj_face,face_m,hv_u_matrix);
+            if vpn2idx ~= v2idx
+                 border_vertex_idx=[border_vertex_idx;vpn2idx];
             else
                 break;
             end

@@ -1,39 +1,37 @@
 % advancing front mesh generation loop
 disp(['loop ' num2str(loop_i) ':']);
 %% get min theta and vid
-border_num=length(border_l);
 min_theta=ones(border_num,1)*2*pi;% min theta for each border
 min_theta_vi=zeros(border_num,1);% vertex idx with min theta for each border
 i=0;
-while i<border_num && ~isempty(border_l)
+while i<size(border_l,1) && ~isempty(border_l)
     i=i+1;
     bli=border_l(i);
     v_bli=border_vid{i};%vertex on border Label=lli
     vn_bli=size(v_bli,1);
-    disp(['front size:' num2str(front_size)])
+    front_size=vn_bli;
     if vn_bli<3
         border_l(border_l==bli)=[];
-        border_vid{i}=[];
         i=i-1;
         continue;
     end
     
     %find v1_3 v2_3
-    s=floor(vn_bli/3); % >=1
-    v1_3=v_bli( 1+s );
-    v2_3=v_bli( 1+s*2 );
+    v1_3=v_bli( floor(vn_bli/3) );
+    v2_3=v_bli( floor(vn_bli*2/3) );
     v0=v_bli(1);
+    
     normal_border=normal4plane(vertex_m(v0,:),...
         vertex_m(v1_3,:),vertex_m(v2_3,:));
     normal_border=normal_border/norm(normal_border);
-    %     adj_edge_vertex=find_nonborder_neighbor(v_bli(vi),adj_list_m,isborder);
-    %     v0nnb=adj_edge_vertex(1);
-    %     if (vertex_m(v0nnb,:)-vertex_m(v0,:))*normal_border'>0
+%     adj_edge_vertex=find_nonborder_neighbor(v_bli(vi),adj_list_m,isborder);
+%     v0nnb=adj_edge_vertex(1);
+%     if (vertex_m(v0nnb,:)-vertex_m(v0,:))*normal_border'>0
     if normal_border(3)<0
         normal_border=-normal_border;
     end
-    %     normal_border=[0 0 1];
-    %     disp('search min theta for border i:')
+%     normal_border=[0 0 1];
+%     disp('search min theta for border i:')
     for vi=1:vn_bli
         v1idx=v_bli(vi);
         v1=vertex_m(v1idx,:);
@@ -43,31 +41,31 @@ while i<border_num && ~isempty(border_l)
         
         if theta_i<min_theta(i)
             min_theta(i)=theta_i;
-            %             disp([num2str(theta_i)]);
+%             disp([num2str(theta_i)]);
             min_theta_vi(i)=vi;
         end
-    end
+    end   
     %% generate vertex on min_theta plane
     v1idx_ob=min_theta_vi(i);% no. on border, [1,bvn]
     v1idx=v_bli(v1idx_ob);
-    %     disp(['border ' num2str(i) ': v1 idx:' num2str(v1idx)])
-    %     disp(['min theta:' num2str(min_theta(i)) ])
-    %     normalv1=normalv(:,v1idx)';
+%     disp(['border ' num2str(i) ': v1 idx:' num2str(v1idx)])
+%     disp(['min theta:' num2str(min_theta(i)) ])
+%     normalv1=normalv(:,v1idx)';
     v2idx=v_bli(mod(v1idx_ob,vn_bli)+1);
     v3idx=v_bli(mod(v1idx_ob-2,vn_bli)+1);
     v1=vertex_m(v1idx,:);
     vec12=vertex_m(v2idx,:)-v1;
-    vec13=vertex_m(v3idx,:)-v1;
+    vec13=vertex_m(v3idx,:)-v1;    
     
-    %         quiver3(v1(1),v1(2),v1(3),...
-    %             vec12(1),vec12(2),vec12(3),'b','LineWidth',2);
-    %
-    %         quiver3(v1(1),v1(2),v1(3),...
-    %             vec13(1),vec13(2),vec13(3),'b','LineWidth',1);
+%         quiver3(v1(1),v1(2),v1(3),...
+%             vec12(1),vec12(2),vec12(3),'b','LineWidth',2);
+%     
+%         quiver3(v1(1),v1(2),v1(3),...
+%             vec13(1),vec13(2),vec13(3),'b','LineWidth',1);
     
-    %         quiver3(0,0,0,...
-    %             normal_border(1),normal_border(2),normal_border(3),'b','LineWidth',1);
-    %
+%         quiver3(0,0,0,...
+%             normal_border(1),normal_border(2),normal_border(3),'b','LineWidth',1);
+%     
     
     if cross(vec12,vec13)*normal_border'<0
         [vec12, vec13]=exchange(vec12,vec13);
@@ -123,7 +121,7 @@ while i<border_num && ~isempty(border_l)
         vec2n=norm(vec13);
         vec12=vec12/vec1n;
         vec13=vec13/vec2n;
-        edge_length=max([mean([vec1n vec2n]),0.1]);
+        edge_length=mean([vec1n vec2n]);
         bisector=vec12+vec13;
         bisector=bisector/norm(bisector);
         
@@ -219,14 +217,14 @@ while i<border_num && ~isempty(border_l)
             
             new_patch=[[v1idx v2idx vp_idx];
                 [v1idx vp_idx v3idx];];
-            %             disp(['new patch:' '('...
-            %                 num2str(new_patch(1,1)),','...
-            %                 num2str(new_patch(1,2)),','...
-            %                 num2str(new_patch(1,3)) ...
-            %                 ') ('...
-            %                 num2str(new_patch(2,1)),','...
-            %                 num2str(new_patch(2,2)),','...
-            %                 num2str(new_patch(2,3)) ')']);
+%             disp(['new patch:' '('...
+%                 num2str(new_patch(1,1)),','...
+%                 num2str(new_patch(1,2)),','...
+%                 num2str(new_patch(1,3)) ...
+%                 ') ('...
+%                 num2str(new_patch(2,1)),','...
+%                 num2str(new_patch(2,2)),','...
+%                 num2str(new_patch(2,3)) ')']);
             
             face_patch=[face_patch;new_patch];
             face_m=[face_m;new_patch];
@@ -242,7 +240,7 @@ while i<border_num && ~isempty(border_l)
         disp(['border ' num2str(i) ': add two vertex'])
         vec1n=norm(vec12);
         vec2n=norm(vec13);
-        edge_length=max([mean([vec1n vec2n]),0.1]);
+        edge_length=mean([vec1n vec2n]);
         theta_3=min_theta(i)/3;
         vec12=vec12/vec1n;
         vec13=vec13/vec2n;
@@ -324,13 +322,13 @@ while i<border_num && ~isempty(border_l)
         if ang2p2>pi
             ang2p2=pi-ang2p2;
         end
-        if ang2p1 > ang2p2
+        if >ang2p2...
             figure(25);
-            quiver3(v1(1),v1(2),v1(3),...
-                vec12(1),vec12(2),vec12(3),'b','LineWidth',2);
-            
-            quiver3(v1(1),v1(2),v1(3),...
-                vec13(1),vec13(2),vec13(3),'b','LineWidth',1);
+        quiver3(v1(1),v1(2),v1(3),...
+            vec12(1),vec12(2),vec12(3),'b','LineWidth',2);
+    
+        quiver3(v1(1),v1(2),v1(3),...
+            vec13(1),vec13(2),vec13(3),'b','LineWidth',1);
             [vp1_rot,vp2_rot]=exchange(vp1_rot,vp2_rot);
         end
         % check vertex merge
@@ -410,5 +408,5 @@ end %for each border
 
 %% show patch
 % subplot(2,1,2)
-% show_patch
+show_patch
 

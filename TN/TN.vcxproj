@@ -33,6 +33,7 @@
     <ClCompile Include="ViewTree.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="data_def.h" />
     <ClInclude Include="findNodeVisitor.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="MeshNodeVisitor.h" />

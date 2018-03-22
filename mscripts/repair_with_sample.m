@@ -4,6 +4,34 @@ clear
 clc
 
 addpath(genpath('./toolbox'));
+%%
+load m0319ball.mat;
+
+fn=size(face,1);
+
+idx=[];
+for i=1:fn
+    if vertex(face(i,1),3)>3||vertex(face(i,2),3)>3||vertex(face(i,3),3)>3
+        idx=[idx;i];
+    end
+end
+
+
+face_c=face(idx,:);
+
+face_2=face([1:857 859:end],:);
+face_3=face_between([1 3:end],:);
+figure;
+hold on;
+grid off
+trisurf(face_2,vertex(:,1),vertex(:,2),vertex(:,3),'FaceVertexCData',0);
+% trisurf(face_inside,vertex(:,1),vertex(:,2),vertex(:,3),'FaceVertexCData',0);
+trisurf(face_3,vertex_between(:,1),vertex_between(:,2),vertex_between(:,3),'FaceVertexCData',1);
+% trisurf(face_outside,vertex(:,1),vertex(:,2),vertex(:,3),'FaceVertexCData',2);
+axis([-15 15 -15 15 -5 15]);
+view(2);
+
+%%
 % load cylinder sample
 load cylinder_sample.mat
 %% create new cylinder sample

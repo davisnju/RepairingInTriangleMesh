@@ -1,6 +1,6 @@
 function beta = vec3ang_with_dir(u,v,n)
 
-% beta vary [0,2*pi]
+% beta vary [0,pi]
 beta=vec3theta(u,v);
 
 % judge direction

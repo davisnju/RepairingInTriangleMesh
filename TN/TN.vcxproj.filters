@@ -143,6 +143,9 @@
     <ClInclude Include="osg_utils.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="data_def.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="osgViewerMFCSDIVS.vcxproj.filters" />
