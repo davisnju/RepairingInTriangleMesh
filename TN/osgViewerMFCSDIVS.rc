@@ -331,6 +331,7 @@ BEGIN
     "S",            ID_OSG_SELECT,          VIRTKEY, CONTROL, ALT, NOINVERT
     "T",            ID_OSG_TRANS,           VIRTKEY, CONTROL, ALT, NOINVERT
     "S",            ID_SCENE_SAVE,          VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
 END
 
 

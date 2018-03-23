@@ -453,6 +453,10 @@ void CTNView::loadScene(CString filePath)
     }
     ref_ptr<Group> newSceneNode = dynamic_cast<Group*>(osgDB::readNodeFile(CStringA(filePath).GetBuffer(0)));
 
+
+
+
+
     // 查重名Label，修改新加的Label名，确保无重名Label
     CTNApp *app = (CTNApp *)AfxGetApp();
     app->nodeNameSet.clear();
@@ -463,7 +467,12 @@ void CTNView::loadScene(CString filePath)
     for (int i = 0; i < initSceneChildNum; i++)
     {
         Group* childi = dynamic_cast<Group*>(newSceneNode->getChild(i));
+        if (NULL == childi)
+        {
+            continue;   
+        }
         CString childiName;
+        childi->getName();
         childiName = childi->getName().c_str();
         if (childiName == "Model" || childiName == "Label")
         {

@@ -105,6 +105,7 @@
 #define ID_LOCATE_NODE                  12795
 #define ID_RECTIFY_H                    12797
 #define ID_SAVE_NODE                    12799
+#define ID_ACCELERATOR12801             12801
 #define ID_LABEL_ADDPROP                12803
 #define ID_SCENE_SAVE                   12804
 #define ID_LABEL_EDITPROP               12805
@@ -117,7 +118,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        312
-#define _APS_NEXT_COMMAND_VALUE         12800
+#define _APS_NEXT_COMMAND_VALUE         12802
 #define _APS_NEXT_CONTROL_VALUE         1006
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
