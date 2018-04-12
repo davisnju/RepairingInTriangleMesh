@@ -19,7 +19,7 @@ using namespace osgGA;
 
 /// Constructor.
 CNaviManipulator::CNaviManipulator(int flags)
-: inherited(flags)
+    : inherited(flags)
 {
     naviMode = NAVI_MODE_ORBIT;
     lCtrlDown = false;
@@ -32,9 +32,9 @@ CNaviManipulator::CNaviManipulator(int flags)
 
 /// Constructor.
 CNaviManipulator::CNaviManipulator(const CNaviManipulator& tm, const CopyOp& copyOp)
-: Callback(tm, copyOp),
-inherited(tm, copyOp),
-_previousUp(tm._previousUp)
+    : Callback(tm, copyOp),
+    inherited(tm, copyOp),
+    _previousUp(tm._previousUp)
 {
     naviMode = NAVI_MODE_ORBIT;
     lCtrlDown = false;
@@ -420,7 +420,7 @@ bool CNaviManipulator::pick(const GUIEventAdapter& ea, GUIActionAdapter& us)
             leftMouseDown = true;
 
             // 选到模型则高亮
-            Group* selectedModel = root;            
+            Group* selectedModel = root;
             osgUtil::LineSegmentIntersector::Intersections intersections;
             if (viewer->computeIntersections(ea, intersections))
             {
@@ -458,9 +458,9 @@ bool CNaviManipulator::pick(const GUIEventAdapter& ea, GUIActionAdapter& us)
                     }
                 }
                 HWND hMainWnd = AfxGetApp()->GetMainWnd()->GetSafeHwnd();
-                
+
                 if (handleMovingModels)
-                {                    
+                {
                     return true;
                 }
                 else
@@ -510,7 +510,7 @@ bool CNaviManipulator::pick(const GUIEventAdapter& ea, GUIActionAdapter& us)
 
             }
         }
-        break;    
+        break;
     case GUIEventAdapter::DRAG:
         viewer = dynamic_cast<osgViewer::Viewer*>(&us);
         root = dynamic_cast<Group*>(viewer->getSceneData());
@@ -610,24 +610,25 @@ bool CNaviManipulator::pick(const GUIEventAdapter& ea, GUIActionAdapter& us)
                         }
                     }
 
-                    // 选中root下和矩形框相交的对象
-                    Group* mg = NULL;
-                    int intersectionNum = 0;
-                    for (int i = 0; i < rootChildNum; i++)
-                    {
-                        mg = dynamic_cast<Group*>(root->getChild(i));
-                        if (mg == NULL || mg == fg)continue;
-                        Vec3 center = mg->getBound().center();
-                        if (mg->getName() == "Model"
-                            && isNodeInRect(center, m_MousePush, m_MouseRelease))
-                        {
-                            pickNode(root, mg);
-                        }
-                    }
-                    // 删除选框
-                    root->removeChild(fg);
-                    m_MousePush.set(Vec3(0., 0., 0.));
-                    m_MouseRelease.set(Vec3(0., 0., 0.));
+                    //// 选中root下和矩形框相交的对象
+                    //Group* mg = NULL;
+                    //int intersectionNum = 0;
+                    //for (int i = 0; i < rootChildNum; i++)
+                    //{
+                    //    mg = dynamic_cast<Group*>(root->getChild(i));
+                    //    if (mg == NULL || mg == fg)continue;
+                    //    Vec3 center = mg->getBound().center();
+                    //    float radius = mg->getBound().radius();
+                    //    if (mg->getName() == "Model"
+                    //        && isNodeInRect(center, radius, m_MousePush, m_MouseRelease))
+                    //    {
+                    //        pickNode(root, mg);
+                    //    }
+                    //}
+                    //// 删除选框
+                    //root->removeChild(fg);
+                    //m_MousePush.set(Vec3(0., 0., 0.));
+                    //m_MouseRelease.set(Vec3(0., 0., 0.));
                 }
 
                 // debugging
@@ -695,7 +696,7 @@ ref_ptr<Node> CNaviManipulator::createFrame(const Vec3& MP, const Vec3& MR)
     return geode;
 }
 
-bool CNaviManipulator::isNodeInRect(Vec3 center, Vec3d MousePush, Vec3d MouseRelease)
+bool CNaviManipulator::isNodeInRect(Vec3 center, float radius, Vec3d MousePush, Vec3d MouseRelease)
 {
     float left, right, top, bottom, x, y;
     left = MousePush.x() < MouseRelease.x() ?
@@ -708,8 +709,8 @@ bool CNaviManipulator::isNodeInRect(Vec3 center, Vec3d MousePush, Vec3d MouseRel
         MousePush.y() : MouseRelease.y();
     x = center.x();
     y = center.y();
-
-    return left <= x && x <= right && bottom <= y && y <= top;
+    return sqrt(square(x - left) + square(y - top))<radius;
+    //return left <= x && x <= right && bottom <= y && y <= top;
 }
 
 void CNaviManipulator::pickNode(Group* root, Group* mg)
@@ -769,12 +770,15 @@ void CNaviManipulator::getMeshInRect(Group* model, Vec3d MousePush, Vec3d MouseR
         triTexInRect->push_back(textArray->at(triIndex.at(i) + 2));
     }
 
-    Node* mesh = creatMesh(triPointsInRect, triTexInRect);
+
+
+
+    ref_ptr<Node> mesh = creatMesh(triPointsInRect, triTexInRect);
     mesh->setName("Mesh");
     osg::ref_ptr<Group> meshGroup = new Group;
     meshGroup->setName("MeshGroup");
-    Vec3f positionAdj = Vec3f(0, 0, 21.); // adjust zxis position
-    MatrixTransform* trans = new MatrixTransform;
+    Vec3f positionAdj = Vec3f(0, 0, 0.); // adjust zxis position
+    ref_ptr<MatrixTransform> trans = new MatrixTransform;
     trans->setName("Matrix");
     trans->setMatrix(Matrix::scale(1., 1., 1.) // adjust scale
                      *Matrix::translate(positionAdj) // adjust position
@@ -785,23 +789,23 @@ void CNaviManipulator::getMeshInRect(Group* model, Vec3d MousePush, Vec3d MouseR
                                            "D:/OSG/Production_1/Data/meshSelected.osgb",
                                            osgDB::Registry::instance()->getOptions());
 
-    int rootChildNum = model->getNumChildren();
-    osg::ref_ptr<Group> meshNode = NULL;
-    for (int i = 0; i < rootChildNum; i++)
-    {
-        osg::ref_ptr<Group> node = dynamic_cast<Group*>(model->getChild(i));
-        if (node == NULL)continue;
-        if (node->getName() == "MeshGroup")
-        {
-            meshNode = node;
-            model->replaceChild(meshNode, meshGroup);
-            break;
-        }
-    }
-    if (meshNode == NULL)
-    {
-        model->addChild(meshGroup);
-    }
+    //int rootChildNum = model->getNumChildren();
+    //osg::ref_ptr<Group> meshNode = NULL;
+    //for (int i = 0; i < rootChildNum; i++)
+    //{
+    //    osg::ref_ptr<Group> node = dynamic_cast<Group*>(model->getChild(i));
+    //    if (node == NULL)continue;
+    //    if (node->getName() == "MeshGroup")
+    //    {
+    //        meshNode = node;
+    //        model->replaceChild(meshNode, meshGroup);
+    //        break;
+    //    }
+    //}
+    //if (meshNode == NULL)
+    //{
+    //    model->addChild(meshGroup);
+    //}
 }
 
 int CNaviManipulator::getNumInRect(ref_ptr<Vec3Array> triPoints, ref_ptr<Vec3Array> rect, std::vector<int>& triIndex)
@@ -831,7 +835,7 @@ int CNaviManipulator::getNumInRect(ref_ptr<Vec3Array> triPoints, ref_ptr<Vec3Arr
     return numInRect;
 }
 
-Node* CNaviManipulator::creatMesh(ref_ptr<Vec3Array> triPointsInRect, ref_ptr<Vec2Array> triTexInRect)
+ref_ptr<Node> CNaviManipulator::creatMesh(ref_ptr<Vec3Array> triPointsInRect, ref_ptr<Vec2Array> triTexInRect)
 {
     ref_ptr<Geode> geode = new Geode();
     ref_ptr<Geometry> triGeom = new Geometry();
@@ -855,7 +859,7 @@ Node* CNaviManipulator::creatMesh(ref_ptr<Vec3Array> triPointsInRect, ref_ptr<Ve
 
     geode->addDrawable(triGeom);
 
-    return geode.release();
+    return geode;
 }
 
 bool CNaviManipulator::isInRect(ref_ptr<Vec3Array> oneTriPoints, ref_ptr<Vec3Array> rect)
@@ -943,4 +947,17 @@ ref_ptr<Node> CNaviManipulator::creatPoint(int i)
     group->addChild(geode);
     return group;
 
+}
+
+bool CNaviManipulator::handle(const GUIEventAdapter& ea, GUIActionAdapter& us)
+{
+    if (naviMode != NAVI_MODE_SELECT)
+    {
+        return inherited::handle(ea, us);
+    }
+    else
+    {
+        // 浏览-选择模式
+        return pick(ea, us);
+    }
 }

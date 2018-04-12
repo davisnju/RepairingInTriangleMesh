@@ -290,6 +290,8 @@ void CTNDoc::OnFileOpen()
     }
     if (confirmed)
     {
+
+        m_datapath = filePath.Left(filePath.ReverseFind('\\')) + L"\\";
         // 设置程序标题栏
         pFrame->SetWindowTextW(filePath + L" - Scene Editor");
         view->loadScene(filePath);

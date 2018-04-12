@@ -13,7 +13,11 @@ addpath(genpath('./toolbox'));
 % z = vertexes(:,3);
 % tn = nx / 3;
 
-load defected_cylinder_sample2.mat
+% load defected_cylinder_sample2.mat
+% load cylinder_sample2.mat
+
+load test40ball2.mat
+% load test41ball3.mat
 
 vertex_raw=vertex;
 face_raw=face;
@@ -156,6 +160,11 @@ for i=1:ne
         ds_u_size=ds_u_size-1;
     end
 end
+for i=1:ne
+    edge_i=edge_set(i,:);
+    [a,ds_u]=find_in_universe(ds_u,edge_i(1));
+    [b,ds_u]=find_in_universe(ds_u,edge_i(2));
+end
 
 
 %
@@ -237,206 +246,247 @@ end
 
 %%
 %   more complex sample
-vertex_sub=[];
-for i=1:ln
-    vertex_sub=sub_model{i}{1};
-    face_sub=sub_model{i}{2};
-    
-    for k=1:3
-        %   add g
-        face_n=size(face_sub,1);
-        for t=1:face_n
-            T=vertex_sub(face_sub(t,:),:);
-            [~,r,z]=cart2pol(T(:,1),T(:,2),T(:,3));
-            flag=0;
-            for j=1:3
-                if r(j)<5 && (z(j) > 0 && z(j) < 10)
-                    flag=1;
-                    break
-                end
-            end
-            if flag
-                g=[sum(T(:,1)),sum(T(:,2)),sum(T(:,3))]./3;
-                vertex_sub=[vertex_sub;g];
-            end
-        end
-        %   update face
-        DT=delaunayTriangulation(vertex_sub(:,1),vertex_sub(:,2),vertex_sub(:,3));
-        [K,~] = convexHull(DT);
-        vertex_sub=DT.Points(:,:);
-        face_sub=K;
-    end
-    sub_model{i}{1}=vertex_sub;
-    sub_model{i}{2}=face_sub;
-end
-
-vt=[];
-face_c=[];
-for i=1:ln    
-    L=size(vt,1);
-    vt=[vt;sub_model{i}{1}];
-    face_c=[face_c;sub_model{i}{2}+L];
-end
-vertex_c=vt;
+% vertex_sub=[];
+% for i=1:ln
+%     vertex_sub=sub_model{i}{1};
+%     face_sub=sub_model{i}{2};
+%     
+%     for k=1:3
+%         %   add g
+%         face_n=size(face_sub,1);
+%         for t=1:face_n
+%             T=vertex_sub(face_sub(t,:),:);
+%             [~,r,z]=cart2pol(T(:,1),T(:,2),T(:,3));
+%             flag=0;
+%             for j=1:3
+%                 if r(j)<5 && (z(j) > 0 && z(j) < 10)
+%                     flag=1;
+%                     break
+%                 end
+%             end
+%             if flag
+%                 g=[sum(T(:,1)),sum(T(:,2)),sum(T(:,3))]./3;
+%                 vertex_sub=[vertex_sub;g];
+%             end
+%         end
+%         %   update face
+%         DT=delaunayTriangulation(vertex_sub(:,1),vertex_sub(:,2),vertex_sub(:,3));
+%         [K,~] = convexHull(DT);
+%         vertex_sub=DT.Points(:,:);
+%         face_sub=K;
+%     end
+%     sub_model{i}{1}=vertex_sub;
+%     sub_model{i}{2}=face_sub;
+% end
+% 
+% vt=[];
+% face_c=[];
+% for i=1:ln    
+%     L=size(vt,1);
+%     vt=[vt;sub_model{i}{1}];
+%     face_c=[face_c;sub_model{i}{2}+L];
+% end
+% vertex_c=vt;
+face_c=face;
+vertex_c=vertex;
 %%
 %model curvature analysis
 [normalv_c,normalf_c]=compute_normal(vertex_c,face_c);
 figure;
-quiver3(vertex_c(:,1),vertex_c(:,2),vertex_c(:,3),...
-    normalv_c(1,:)',normalv_c(2,:)',normalv_c(3,:)');
+% quiver3(vertex_m(:,1),vertex_m(:,2),vertex_m(:,3),...
+%     normalv_c(1,:)',normalv_c(2,:)',normalv_c(3,:)');
 hold on;
 trisurf(face_c,vertex_c(:,1),vertex_c(:,2),vertex_c(:,3));
-axis([-15 15 -15 15 -5 15]);
-view(0,0);
+grid off
+axis([-15 15 -15 15 -2 12]);
+% view(0,0);
+view([70 5])
+%%
+name='ball300-84';
+clear options;
+options.name = name; % useful for displaying
+% compute the curvature
+options.curvature_smoothing = 2;
+options.verb = 0;
+[Umin,Umax,Cmin,Cmax,Cmean,Cgauss,Normal] = compute_curvature(vertex_m,face_m,options);
+% display
+figure;
+clf;
+subplot(1,2,1);
+options.face_vertex_color = perform_saturation(sqrt((Cmin.^2+Cmax.^2)./2),1.2);
+plot_mesh(vertex_m,face_m, options); shading interp; colormap jet(256);
+title('Gaussian curvature');
+subplot(1,2,2);
+options.face_vertex_color = perform_saturation(sqrt((Cmin.^2+Cmax.^2)./2),1.2);
+plot_mesh(vertex_m,face_m, options); shading interp; colormap jet(256);
+title('Rms curvature');
+[Umin,Umax,Cmin,Cmax,Cmean,Cgauss,Normal] = compute_curvature(vertex_s,face_m,options);
+figure;
+clf;
+subplot(1,2,1);
+options.face_vertex_color = perform_saturation(sqrt((Cmin.^2+Cmax.^2)./2),1.2);
+plot_mesh(vertex_s,face_m, options); shading interp; colormap jet(256);
+title('Gaussian curvature');
+subplot(1,2,2);
+options.face_vertex_color = perform_saturation(sqrt((Cmin.^2+Cmax.^2)./2),1.2);
+plot_mesh(vertex_s,face_m, options); shading interp; colormap jet(256);
+title('Rms curvature');
+% options.face_vertex_color = perform_saturation(abs(Cmin)+abs(Cmax),1.2);
+% plot_mesh(vertex,face, options); shading interp; colormap jet(256);
+% title('Total curvature');
 %%
 % divide and conquer
-for sub_i=1:1
-    vertex_sub_i=sub_model{sub_i}{1};%vertex   n-by-3
-    face_sub_i=sub_model{sub_i}{2};%face   n-by-3
-    vertex=vertex_sub_i;
-    face=face_sub_i;
-    [normalv,normalf]=compute_normal(vertex,face);
+% for sub_i=1:2
+%     vertex_sub_i=sub_model{sub_i}{1};%vertex   n-by-3
+%     face_sub_i=sub_model{sub_i}{2};%face   n-by-3
+%     vertex=vertex_sub_i;
+%     face=face_sub_i;
+%     [normalv,normalf]=compute_normal(vertex,face);
+%     
+%     figure;
+%     quiver3(vertex(:,1),vertex(:,2),vertex(:,3),normalv(1,:)',normalv(2,:)',normalv(3,:)');
+%     hold on;
+%     trisurf(face,vertex(:,1),vertex(:,2),vertex(:,3));
+%     axis([-15 15 -15 15 -5 15]);
+%     view(0,0);
+%     
+%     name='cylinder';
+%     clear options;
+%     options.name = name; % useful for displaying
+%     % compute the curvature
+%     options.curvature_smoothing = 0;
+%     options.verb = 0;
+%     [Umin,Umax,Cmin,Cmax,Cmean,Cgauss,Normal] = compute_curvature(vertex,face,options);
+%     % display
+%     figure;
+%     clf;
+%     subplot(1,2,1);
+%     options.face_vertex_color = perform_saturation(Cgauss,1.2);
+%     plot_mesh(vertex,face, options); shading interp; colormap jet(256);
+%     title('Gaussian curvature');
+%     subplot(1,2,2);
+%     options.face_vertex_color = perform_saturation(abs(Cmin)+abs(Cmax),1.2);
+%     plot_mesh(vertex,face, options); shading interp; colormap jet(256);
+%     title('Total curvature');
+    % ================
+%     figure;
+%     clear options;
+%     options.name = name; % useful for displaying
+%     clf;
+%     subplot(2,2,1);
+%     plot_mesh(vertex,face,options); shading interp; axis tight;
+%     hold on;
+%     q=quiver3(vertex(:,1),vertex(:,2),vertex(:,3),Umin(1,:)',Umin(2,:)',Umin(3,:)');
+%     q.Color='b';
+%     q.ShowArrowHead='off';
+%     
+%     q=quiver3(vertex(:,1),vertex(:,2),vertex(:,3),Umax(1,:)',Umax(2,:)',Umax(3,:)');
+%     q.Color='r';
+%     q.ShowArrowHead='off';
+%     
+%     subplot(2,2,2)
+%     plot_mesh(vertex,face,options); shading interp; axis tight;
+%     hold on;
+%     q=quiver3(vertex(:,1),vertex(:,2),vertex(:,3),Umin(1,:)',Umin(2,:)',Umin(3,:)');
+%     q.Color='b';
+%     q.ShowArrowHead='off';
+%     title('min direction of curvature')
+%     subplot(2,2,4)
+%     plot_mesh(vertex,face,options); shading interp; axis tight;
+%     hold on;
+%     q=quiver3(vertex(:,1),vertex(:,2),vertex(:,3),Umax(1,:)',Umax(2,:)',Umax(3,:)');
+%     q.Color='r';
+%     q.ShowArrowHead='off';
+%     title('max direction of curvature')
     
-    figure;
-    quiver3(vertex(:,1),vertex(:,2),vertex(:,3),normalv(1,:)',normalv(2,:)',normalv(3,:)');
-    hold on;
-    trisurf(face,vertex(:,1),vertex(:,2),vertex(:,3));
-    axis([-15 15 -15 15 -5 15]);
-    view(0,0);
+    %  feature detection  corner & edge feature
+%     face_n=size(face,1);
+%     nv=size(vertex,1);
+%     
+%     theta_sharp=0.5;
+%     phi_corner=0.6;
+%     n_m0=zeros(1,3);
+%     n_m1=zeros(1,3);
+%     angle_max=0;
+%     mintheta=ones(nv,1).*-1;
+%     maxphi=zeros(nv,1);
+%     for i=1:face_n
+%         v1=face(i,1);
+%         v2=face(i,2);
+%         v3=face(i,3);
+%         n1=normalv(:,v1);
+%         n2=normalv(:,v2);
+%         n3=normalv(:,v3);
+%         dot12=n1'*n2;
+%         dot23=n3'*n2;
+%         dot31=n1'*n3;
+%         a12=myangle(n1,n2);
+%         a23=myangle(n2,n3);
+%         a31=myangle(n3,n1);
+%         [angle_max, idx]=max([angle_max a12 a23 a31]);
+%         switch(idx)
+%             case 2
+%                 n_m0=n1;n_m1=n2;
+%             case 3
+%                 n_m0=n2;n_m1=n3;
+%             case 4
+%                 n_m0=n3;n_m1=n1;
+%             otherwise
+%                 
+%         end
+%         if mintheta(v1)<0
+%             mintheta(v1)=min([dot12,dot31]);
+%         else
+%             mintheta(v1)=min([mintheta(v1),dot12,dot31]);
+%         end
+%         if mintheta(v2)<0
+%             mintheta(v2)=min([dot12,dot23]);
+%         else
+%             mintheta(v2)=min([mintheta(v2),dot12,dot23]);
+%         end
+%         if mintheta(v3)<0
+%             mintheta(v3)=min([dot31,dot23]);
+%         else
+%             mintheta(v3)=min([mintheta(v3),dot31,dot23]);
+%         end
+%     end
+%     
+%     n_star=cross(n_m0,n_m1);
+%     for i=1:nv        
+%         maxphi(i)=max([maxphi(i) abs(normalv(:,i)'*n_star)]);
+%     end
+%     
+%     %
+%     figure(11);
+%     clf;
+%     hold on;
+%     grid on;
+%     for i=1:face_n
+%         v1=face(i,1);
+%         v2=face(i,2);
+%         v3=face(i,3);
+%         vs=[vertex(v1,:);
+%             vertex(v2,:);
+%             vertex(v3,:)];
+%         
+%         plot3tr(vs(:,1), vs(:,2),vs(:,3),'g-');
+%     end
+%     for i=1:nv        
+%         if mintheta(i)<theta_sharp
+%             if maxphi(i)>phi_corner
+%                 s='m*';      % corner feature
+%             else
+%                 s='b*';      % edge feature   
+%             end
+%             scatter3(vertex(i,1), vertex(i,2),vertex(i,3),s);
+%         end
+%     end
     
-    name='cylinder';
-    clear options;
-    options.name = name; % useful for displaying
-    % compute the curvature
-    options.curvature_smoothing = 2;
-    options.verb = 0;
-    [Umin,Umax,Cmin,Cmax,Cmean,Cgauss,Normal] = compute_curvature(vertex,face,options);
-    % display
-    figure;
-    clf;
-    subplot(1,2,1);
-    options.face_vertex_color = perform_saturation(Cgauss,1.2);
-    plot_mesh(vertex,face, options); shading interp; colormap jet(256);
-    title('Gaussian curvature');
-    subplot(1,2,2);
-    options.face_vertex_color = perform_saturation(abs(Cmin)+abs(Cmax),1.2);
-    plot_mesh(vertex,face, options); shading interp; colormap jet(256);
-    title('Total curvature');
-    %
-    figure;
-    clear options;
-    options.name = name; % useful for displaying
-    clf;
-    subplot(2,2,1);
-    plot_mesh(vertex,face,options); shading interp; axis tight;
-    hold on;
-    q=quiver3(vertex(:,1),vertex(:,2),vertex(:,3),Umin(1,:)',Umin(2,:)',Umin(3,:)');
-    q.Color='b';
-    q.ShowArrowHead='off';
-    
-    q=quiver3(vertex(:,1),vertex(:,2),vertex(:,3),Umax(1,:)',Umax(2,:)',Umax(3,:)');
-    q.Color='r';
-    q.ShowArrowHead='off';
-    
-    subplot(2,2,2)
-    plot_mesh(vertex,face,options); shading interp; axis tight;
-    hold on;
-    q=quiver3(vertex(:,1),vertex(:,2),vertex(:,3),Umin(1,:)',Umin(2,:)',Umin(3,:)');
-    q.Color='b';
-    q.ShowArrowHead='off';
-    title('min direction of curvature')
-    subplot(2,2,4)
-    plot_mesh(vertex,face,options); shading interp; axis tight;
-    hold on;
-    q=quiver3(vertex(:,1),vertex(:,2),vertex(:,3),Umax(1,:)',Umax(2,:)',Umax(3,:)');
-    q.Color='r';
-    q.ShowArrowHead='off';
-    title('max direction of curvature')
-    
-    %
-    face_n=size(face,1);
-    nv=size(vertex,1);
-    
-    theta_sharp=0.5;
-    phi_corner=0.6;
-    n_m0=zeros(1,3);
-    n_m1=zeros(1,3);
-    angle_max=0;
-    mintheta=ones(nv,1).*-1;
-    maxphi=zeros(nv,1);
-    for i=1:face_n
-        v1=face(i,1);
-        v2=face(i,2);
-        v3=face(i,3);
-        n1=normalv(:,v1);
-        n2=normalv(:,v2);
-        n3=normalv(:,v3);
-        dot12=n1'*n2;
-        dot23=n3'*n2;
-        dot31=n1'*n3;
-        a12=myangle(n1,n2);
-        a23=myangle(n2,n3);
-        a31=myangle(n3,n1);
-        [angle_max, idx]=max([angle_max a12 a23 a31]);
-        switch(idx)
-            case 2
-                n_m0=n1;n_m1=n2;
-            case 3
-                n_m0=n2;n_m1=n3;
-            case 4
-                n_m0=n3;n_m1=n1;
-            otherwise
-                
-        end
-        if mintheta(v1)<0
-            mintheta(v1)=min([dot12,dot31]);
-        else
-            mintheta(v1)=min([mintheta(v1),dot12,dot31]);
-        end
-        if mintheta(v2)<0
-            mintheta(v2)=min([dot12,dot23]);
-        else
-            mintheta(v2)=min([mintheta(v2),dot12,dot23]);
-        end
-        if mintheta(v3)<0
-            mintheta(v3)=min([dot31,dot23]);
-        else
-            mintheta(v3)=min([mintheta(v3),dot31,dot23]);
-        end
-    end
-    
-    n_star=cross(n_m0,n_m1);
-    for i=1:nv        
-        maxphi(i)=max([maxphi(i) abs(normalv(:,i)'*n_star)]);
-    end
-    
-    %
-    figure(11);
-    clf;
-    hold on;
-    grid on;
-    for i=1:face_n
-        v1=face(i,1);
-        v2=face(i,2);
-        v3=face(i,3);
-        vs=[vertex(v1,:);
-            vertex(v2,:);
-            vertex(v3,:)];
-        
-        plot3tr(vs(:,1), vs(:,2),vs(:,3),'g-');
-    end
-    for i=1:nv        
-        if mintheta(i)<theta_sharp
-            if maxphi(i)>phi_corner
-                s='m*';      % corner feature
-            else
-                s='b*';      % edge feature   
-            end
-            scatter3(vertex(i,1), vertex(i,2),vertex(i,3),s);
-        end
-    end
-    
-end
+% end
+
+
+
+
 function beta = myangle(u,v)
 % beta vary [0,2*pi)
 du = sqrt( sum(u.^2) );

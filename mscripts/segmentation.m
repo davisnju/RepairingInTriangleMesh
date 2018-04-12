@@ -2,7 +2,7 @@
 % input
 vertex_seg=vertex_c;
 face_seg=face_c;
-REGION_MERGE_THRESH=0.02;
+REGION_MERGE_THRESH=0.01;
 %
 % [normalv,normalf]=compute_normal(vertex_seg,face_seg);
 name='segmentation';
@@ -41,16 +41,9 @@ L=Lrms;
 C=Crms;
 
 % region adj matrix
-label_face=unique(L(face(:,:)),'rows');
-f = double(label_face);
-reg_A = sparse([f(:,1); f(:,1); f(:,2); f(:,2); f(:,3); f(:,3)], ...
-           [f(:,2); f(:,3); f(:,1); f(:,3); f(:,1); f(:,2)], ...
-           1.0);
-% avoid double links
-reg_A = double(reg_A>0);
-for i=1:size(reg_A,1)
-    reg_A(i,i)=0;
-end
+label_face=unique(L(face_seg(:,:)),'rows');
+
+reg_A = triangulation2adjacency(label_face,vertex_seg);
 % adjmatrix2list
 reg_adj_list = adjmatrix2list(reg_A);
 
@@ -62,12 +55,16 @@ for i=1:Lnum
     h_min_reg(i)=min(C(L==Labels(i)));
 end
 
+for i=1:Lnum
+    reg_adj_list{i}=setdiff(reg_adj_list{i},i);
+end
+
 % min relative height
 Hr=Inf(Lnum,Lnum);
 for i=1:Lnum
     Hr(i,i)=0;
 end
-nv=size(vertex,1);
+nv=size(vertex_seg,1);
 for i=1:nv
     lv=L(i);
     cv=C(i);

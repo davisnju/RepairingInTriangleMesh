@@ -16,6 +16,7 @@
 #include "MainFrm.h"
 
 #include "ModelDlg.h"
+#include "HoleDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -43,6 +44,11 @@ BEGIN_MESSAGE_MAP(CTNView, CView)
     ON_WM_DESTROY()
     ON_WM_MOUSEWHEEL()
     ON_COMMAND(ID_OSG_ADDLABEL, &CTNView::OnOsgAddlabel)
+    ON_COMMAND(ID_HOLE_REPAIR, &CTNView::OnHoleRepair)
+    ON_COMMAND(ID_HOLE_RECONG, &CTNView::OnHoleRecong)
+    ON_COMMAND(ID_MODEL_CHECK, &CTNView::OnModelCheck)
+    ON_COMMAND(ID_MODEL_REPAIR, &CTNView::OnModelRepair)
+    ON_COMMAND(ID_PATCH_SMOOTH, &CTNView::OnPatchSmooth)
 END_MESSAGE_MAP()
 
 void sendBuildString(CString cstr)
@@ -503,4 +509,46 @@ void CTNView::loadScene(CString filePath)
     //AfxMessageBox(L"加载成功！");
 
 
+}
+
+
+void CTNView::OnHoleRepair()
+{
+    // TODO:  在此添加命令处理程序代码
+
+    CString patch_file = L"D:\\bishe\\Source\\RepairingInTriangleMesh\\mscripts\\res\\bunny_repaired.osg";
+
+    mOSG->addPatch(patch_file);
+
+}
+
+
+void CTNView::OnHoleRecong()
+{
+    // TODO:  在此添加命令处理程序代码
+    //CHoleDlg hdlg;
+    //hdlg.DoModal();
+    //return;
+    mOSG->addBorder();
+}
+
+
+void CTNView::OnModelCheck()
+{
+    // TODO:  在此添加命令处理程序代码
+    AfxMessageBox(L"OnModelCheck");
+}
+
+
+void CTNView::OnModelRepair()
+{
+    // TODO:  在此添加命令处理程序代码
+    AfxMessageBox(L"OnModelRepair");
+}
+
+
+void CTNView::OnPatchSmooth()
+{
+    // TODO:  在此添加命令处理程序代码
+    AfxMessageBox(L"OnPatchSmooth");
 }

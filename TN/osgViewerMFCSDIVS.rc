@@ -222,6 +222,18 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "水平校正 (&H)",                   ID_RECTIFY_H
         MENUITEM "保存节点 (&S)",                   ID_SAVE_NODE
+        MENUITEM SEPARATOR
+        POPUP "非封闭孔洞修补"
+        BEGIN
+            MENUITEM "识别",                          ID_HOLE_RECONG
+            MENUITEM "修补",                          ID_HOLE_REPAIR
+        END
+        POPUP "封闭孔洞修补"
+        BEGIN
+            MENUITEM "识别",                          ID_MODEL_CHECK
+            MENUITEM "修补",                          ID_MODEL_REPAIR
+            MENUITEM "光顺",                          ID_PATCH_SMOOTH
+        END
     END
     POPUP "视图(&V)"
     BEGIN
@@ -321,6 +333,7 @@ END
 
 IDR_MAINFRAME ACCELERATORS
 BEGIN
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
     "E",            ID_OSG_ADDEF,           VIRTKEY, CONTROL, ALT, NOINVERT
     "L",            ID_OSG_ADDLABEL,        VIRTKEY, CONTROL, ALT, NOINVERT
     "A",            ID_OSG_ADDMD,           VIRTKEY, CONTROL, ALT, NOINVERT
@@ -330,8 +343,10 @@ BEGIN
     "Z",            ID_OSG_SCALE,           VIRTKEY, CONTROL, ALT, NOINVERT
     "S",            ID_OSG_SELECT,          VIRTKEY, CONTROL, ALT, NOINVERT
     "T",            ID_OSG_TRANS,           VIRTKEY, CONTROL, ALT, NOINVERT
-    "S",            ID_SCENE_SAVE,          VIRTKEY, SHIFT, CONTROL, NOINVERT
-    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
+    "S",            ID_SCENE_SAVE,          VIRTKEY, CONTROL, ALT, NOINVERT
+    "C",            ID_MODEL_CHECK,         VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "R",            ID_MODEL_REPAIR,        VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "S",            ID_PATCH_SMOOTH,        VIRTKEY, SHIFT, CONTROL, NOINVERT
 END
 
 
@@ -376,6 +391,16 @@ BEGIN
     CONTROL         "",IDC_LIST_ITEM,"SysListView32",LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,25,201,93
     LTEXT           "节点名称：",IDC_STATIC,7,133,41,8
     LTEXT           "节点模型：",IDC_STATIC,7,9,41,8
+END
+
+IDD_DIALOG_NO_HOLE DIALOGEX 0, 0, 187, 68
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "提示"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,34,47,50,14
+    PUSHBUTTON      "取消",IDCANCEL,102,47,50,14
+    LTEXT           "没有检测到缺失！",IDC_STATIC,33,21,108,15
 END
 
 
@@ -448,6 +473,14 @@ BEGIN
         RIGHTMARGIN, 208
         TOPMARGIN, 7
         BOTTOMMARGIN, 169
+    END
+
+    IDD_DIALOG_NO_HOLE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 180
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 61
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -617,8 +650,8 @@ END
 STRINGTABLE
 BEGIN
     ID_LABEL_ADDPROP        "添加属性信息到这个标签\n添加属性"
-    ID_LABEL_EDITPROP       "修改选中的属性（包括属性名称和属性取值）\n编辑属性"
-    ID_LABEL_DEL            "从场景中删除当前标签\n删除标签"
+    ID_LABEL_EDITPROP       "非封闭三角网格孔洞修补\n孔洞修补"
+    ID_LABEL_DEL            "非封闭三角网格模型孔洞识别\n孔洞识别"
     ID_LABEL_DELPROP        "删除选中的属性\n删除属性"
 END
 

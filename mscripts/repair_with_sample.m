@@ -52,14 +52,16 @@ save cylinder_sample2 vertex face
 load defected_cylinder_sample.mat
 load defected_cylinder_sample2.mat
 
-% %%
-%create new defected cylinder sample
-% r=5;h=10;BO=[0,0,0];factor=0.8;r=5;vertical_pn=4;circle_pn=6;
-% [vertex,face]=create_defected_cylinder_sample(r,h,BO,factor,vertical_pn,circle_pn);
-% save defected_cylinder_sample vertex face
+%%
+% create new defected cylinder sample
+r=5;h=15;BO=[0,0,0];factor=0.84;r=5;vertical_pn=4;circle_pn=6;
+k=30;n=20;m=30;
+[vertex,face]=create_defected_cylinder_sample(r,h,BO,factor,vertical_pn,circle_pn,k,n,m);
+save defected_cylinder_sample5.mat vertex face
 
 figure;
 trisurf(face,vertex(:,1),vertex(:,2),vertex(:,3));
+grid off
 axis([-15 15 -15 15 -5 15]);
 view(0,0);
 %%

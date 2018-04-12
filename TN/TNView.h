@@ -86,6 +86,11 @@ public:
     afx_msg void OnDestroy();
     afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
     afx_msg void OnOsgAddlabel();
+    afx_msg void OnHoleRepair();
+    afx_msg void OnHoleRecong();
+    afx_msg void OnModelCheck();
+    afx_msg void OnModelRepair();
+    afx_msg void OnPatchSmooth();
 };
 
 #ifndef _DEBUG  // TNView.cpp 中的调试版本

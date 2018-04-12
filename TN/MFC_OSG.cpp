@@ -34,6 +34,7 @@
 #include "findNodeVisitor.h"
 
 #include "MFC_OSG.h"
+#include <osg/LineWidth>
 
 
 cOSG::cOSG(HWND hWnd) :
@@ -124,6 +125,10 @@ void cOSG::InitOSG(CString initModelName)
         for (int i = 0; i < initSceneChildNum; i++)
         {
             ref_ptr<Group> childi = dynamic_cast<Group*>(newSceneNode->getChild(i));
+            if (NULL == childi)
+            {
+                continue;
+            }
             childiName = childi->getName().c_str();
             if (childiName == "Model" || childiName == "Label")
             {
@@ -161,9 +166,14 @@ void cOSG::InitOSG(CString initModelName)
         baseModel->setName("BASE");
         //mRoot->addChild(baseModel.get());
         CString cstr;
-        cstr = baseModel->getName().c_str();
-        app->insertNodeName(cstr);
+        //cstr = baseModel->getName().c_str();
+        //app->insertNodeName(cstr);
 
+        ref_ptr<Node> axixModel = createAxis();
+        axixModel->setName("AXIS");
+        mRoot->addChild(axixModel);
+        cstr = axixModel->getName().c_str();
+        app->insertNodeName(cstr);
         //mRoot->addChild(mesh);
 
     }
@@ -212,15 +222,15 @@ void cOSG::InitSceneGraph(void)
     float baseHeight = 0.0f;
     ref_ptr<Node> baseModel = createBase(Vec3(center.x(), center.y(), baseHeight), radius);
     baseModel->setName("BASE");
-    ref_ptr<Node> axixModel = createAxis();
-    axixModel->setName("AXIS");
 
     CString cstr;
 
-    mRoot->addChild(baseModel);
+    //mRoot->addChild(baseModel);
     cstr = baseModel->getName().c_str();
     app->insertNodeName(cstr);
 
+    ref_ptr<Node> axixModel = createAxis();
+    axixModel->setName("AXIS");
     mRoot->addChild(axixModel);
     cstr = axixModel->getName().c_str();
     app->insertNodeName(cstr);
@@ -241,7 +251,7 @@ void cOSG::InitSceneGraph(void)
     }
 
     //
-    addTr();
+    //addTr();
 
     // insert 初始模型
     //ref_ptr<Group> initNode = new Group;
@@ -355,6 +365,101 @@ void cOSG::InitCameraConfig(void)
 }
 
 
+
+void cOSG::addPatch(CString & patch_file)
+{
+    ref_ptr<Geode> patchNode = dynamic_cast<Geode*>(osgDB::readNodeFile(CStringA(patch_file).GetBuffer(0)));
+
+    //指定颜色数组  
+    unsigned int drwnum = patchNode->getNumDrawables();
+    for (unsigned int i = 0; i < drwnum; i++)
+    {
+        ref_ptr<Geometry>geometry = patchNode->getDrawable(i)->asGeometry();
+        if (!geometry)
+            continue;
+
+        ref_ptr<Vec4Array> colors = new osg::Vec4Array();
+        unsigned int nface = geometry->getNumPrimitiveSets();
+        for (unsigned int n = 0; n < nface; ++n)
+        {
+            PrimitiveSet* ps = geometry->getPrimitiveSet(n);
+            if (ps)
+            {
+                colors->push_back(osg::Vec4(0.f, .9f, 0.f, 1.0f));
+            }
+        }
+        geometry->setColorArray(colors);
+        unsigned int carrsize = colors->size();
+        geometry->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE_SET);
+        //指定法线  
+        ref_ptr<Vec3Array> normals = new osg::Vec3Array;
+        normals->push_back(osg::Vec3(0.0f, -1.0f, 0.0f));
+        geometry->setNormalArray(normals);
+        geometry->setNormalBinding(osg::Geometry::BIND_OVERALL);
+    }
+
+
+
+    //CMeshNodeVisitor* mnv = new CMeshNodeVisitor();
+    //patchNode->accept(*mnv);
+    //// 得到各个三角网格的顶点坐标
+    //ref_ptr<Vec3Array> vertices = mnv->getTriPoints();
+
+    mRoot->addChild(patchNode);
+}
+
+void cOSG::addBorder()
+{
+    CString path = L"D:\\bishe\\Source\\RepairingInTriangleMesh\\mscripts\\res\\";
+    CString border_filename;// = L"b1.txt";
+    char buf[3] = { 0 };
+    ref_ptr<Vec4Array> colors = new osg::Vec4Array();
+    colors->push_back(osg::Vec4(1.f, 0.f, 0.f, 1.0f));
+    colors->push_back(osg::Vec4(0.f, 1.f, 0.f, 1.0f));
+    colors->push_back(osg::Vec4(0.f, 0.f, 1.f, 1.0f));
+    colors->push_back(osg::Vec4(1.f, 0.f, 1.f, 1.0f));
+    colors->push_back(osg::Vec4(0.f, 1.f, 1.f, 1.0f));
+    colors->push_back(osg::Vec4(1.f, 1.f, 0.f, 1.0f));
+    //path + border_filename;
+    float x, y, z;
+    for (int i = 1; i < 6; ++i)
+    {
+        itoa(i, buf, 10);
+        border_filename = path + L"b" + CString(buf) + L".txt";
+
+        ref_ptr<Vec3Array> vertices = new Vec3Array;
+        // get Verteces 
+        ifstream input(border_filename);
+        while (input >> x >> y >> z)
+        {
+            vertices->push_back(osg::Vec3(x, y, z));
+        }
+
+        ref_ptr<Geode> geode = new osg::Geode();
+        ref_ptr<Geometry> geom = new osg::Geometry();
+        geom->setVertexArray(vertices);
+
+        ref_ptr<Vec4Array> colori = new osg::Vec4Array();
+        colori->push_back(colors->at(i-1));
+        geom->setColorArray(colori);
+        geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+        //指定法线  
+        ref_ptr<Vec3Array> normals = new osg::Vec3Array;
+        normals->push_back(osg::Vec3(0.0f, -1.0f, 0.0f));
+        geom->setNormalArray(normals);
+        geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
+
+        //将图元添加至geometry  
+        geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_LOOP, 0, vertices->size()));
+
+        ref_ptr<LineWidth> LineSize = new LineWidth;// LineWidth(2.0f);
+        LineSize->setWidth(4.0f);
+        geom->getOrCreateStateSet()->setAttributeAndModes(LineSize.get(), osg::StateAttribute::ON);
+
+        geode->addDrawable(geom);
+        mRoot->addChild(geode);
+    }
+}
 
 void cOSG::addNewModels(bool a)
 {
@@ -551,8 +656,8 @@ void cOSG::setRoot(ref_ptr<Group> newSceneNode)
 
 void cOSG::fixInitCamera()
 {
-    Vec3d eye(47., -124., 150.), center(0., 0., 0.), up(0., 0., 10);
-    m_naviManipulator->setDistance(200.);
+    Vec3d eye(0., 0., 40.), center(0., 0., 0.), up(0., 0., -90.);
+    m_naviManipulator->setDistance(60.);
     m_naviManipulator->setTransformation(eye, center, up);
 }
 
@@ -591,14 +696,24 @@ void cOSG::deleteLabel(CString tarLabel)
     int igChildNum = mRoot->getNumChildren();
     for (int i = 0; i < igChildNum; i++)
     {
-        Group* dg = dynamic_cast<Group*>(mRoot->getChild(i));
+        Node* dg = dynamic_cast<Node*>(mRoot->getChild(i));
         if (dg == NULL)continue;
+        CString modelName;
         if (dg->getName() == "Label")
         {
-            Transform* mt = dg->getChild(0)->asTransform();
+            Transform* mt = dg->asGroup()->getChild(0)->asTransform();
             Node* node = mt->getChild(0);
-            CString modelName;
+            
             modelName = node->getName().c_str();
+            if (modelName == tarLabel)
+            {
+                mRoot->removeChild(i);
+                break;
+            }
+        }
+        else
+        {
+            modelName = dg->getName().c_str();
             if (modelName == tarLabel)
             {
                 mRoot->removeChild(i);
@@ -856,7 +971,7 @@ void cOSG::Render(void* ptr)
     // if you have multiple OSG windows up
     // and you exit one then all stop rendering
     AfxMessageBox(_T("Exit Rendering Thread"));
-
+    exit(1);
     _endthread();
 }
 

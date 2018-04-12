@@ -1,4 +1,4 @@
-function [vertex,face]=create_defected_cylinder_sample(r, h,BO,factor,vertical_pn,circle_pn)
+function [vertex,face]=create_defected_cylinder_sample(r, h,BO,factor,vertical_pn,circle_pn,k,m,n)
 % create_defected_cylinder_sample - compute cylinder sample vertex and delaunay face
 %
 %   [vertex,face]=create_defected_cylinder_sample(r, h,BO,factor,vertical_pn,circle_pn)
@@ -11,7 +11,9 @@ function [vertex,face]=create_defected_cylinder_sample(r, h,BO,factor,vertical_p
 %   Copyright (c) 2018 Wei Dai
 vertex=[];
 h=double(h);
-k=30;
+% k=30;
+% n=20;
+% m=50;%0,1,..,19
 rk=r*0.9*rand(1,k);
 seta=2*pi*rand(1,k);
 x=rk.*cos(seta)+BO(1);
@@ -20,8 +22,6 @@ z=BO(3)*ones(1,k);
 bv=[x;y;z]';
 tv=[x;y;z+h]';
 vertex=[vertex;bv;];
-n=20;
-m=50;%0,1,..,19
 hd=0;
 m2=floor(m*factor)-1;%16, gap vertex can fill 1 level
 ll=m;ul=-1;

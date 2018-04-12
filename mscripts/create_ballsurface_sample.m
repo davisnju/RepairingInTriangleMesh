@@ -1,6 +1,6 @@
 %create ball surface sample
-load ball_vertex.mat
-vertex=rn;
+load ball_vertex300.mat
+% vertex=rn;
 
 DT=delaunayTriangulation(vertex(:,1),vertex(:,2),vertex(:,3));
 [K,~] = convexHull(DT);
@@ -14,7 +14,7 @@ face=K;
 %%
 z_max=max(vertex(:,3));
 z_min=min(vertex(:,3));
-z_th=z_min+0.98*(z_max-z_min);
+z_th=z_min+0.94*(z_max-z_min);
 
 fn=size(face,1);
 face_bottom=[];
@@ -34,10 +34,10 @@ for i=1:fn
     end
 end
 %%
-% figure(2);
-% hold on;
-% grid off
-% trisurf(face_bottom,vertex(:,1),vertex(:,2),vertex(:,3),'FaceColor','blue');
-% axis([-1.5 1.5 -1.5 1.5 -1.5 1.5]);
+figure(2);
+hold on;
+grid off
+trisurf(face_bottom,vertex(:,1),vertex(:,2),vertex(:,3),'FaceColor','blue');
+axis([-1.5 1.5 -1.5 1.5 -1.5 1.5]);
 
-save ball_mesh.mat vertex face
+% save ball_mesh300.mat vertex face

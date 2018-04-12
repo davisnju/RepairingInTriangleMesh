@@ -1,34 +1,25 @@
 %% show patch
-figure(25);
-% clf;
+figure(29);
 % subplot(2,1,2)
-trisurf(outer_surface,vertex_m(:,1),vertex_m(:,2),vertex_m(:,3),...
+hold off
+trisurf(face_bottom,vertex_c(:,1),vertex_c(:,2),vertex_c(:,3),...
 'facecolor','b');
 
 grid off
 hold on
-trisurf(face_patch,vertex_m(:,1),vertex_m(:,2),vertex_m(:,3),...
+trisurf(face_top,vertex_c(:,1),vertex_c(:,2),vertex_c(:,3),...
     'facecolor','y');
 
-% axis([-2 2 -2 2 -2 2]);
-% axis([-15 15 -15 15 -2 12]);
-% view([0 90])
+axis([-2 2 -2 2 -2 2]);
 % view([-160 40])
-% view(2)
-%  view([70 5])
+view(2)
 xlabel('x');
 ylabel('y');
 zlabel('z');
 title(['loop idx=' num2str(loop_i)])
-% trisurf(face_patch,vertex_m(:,1),vertex_m(:,2),vertex_m(:,3));
-% return;% test31c
-% ======test31c island
-%  face_patch=[   face_patch; 49 95 69];
- return;
-% ======
-hold on;
-color=['r','g','b','y','m','c','w','k'];
 
+%%
+color=['r','g','b','y','m','c','w','k'];
 if isempty(border_l)
     return; 
 end
@@ -48,12 +39,12 @@ for i=1:border_num
             vertex_m(v2idx,2);];
         Z=[vertex_m(v1idx,3);
             vertex_m(v2idx,3);];
+        ev=[X(2)-X(1),Y(2)-Y(1),Z(2)-Z(1)];
+        ev=ev/norm(ev);
         plot3(X,Y,Z,color(border_l==bli));
-%         ev=[X(2)-X(1),Y(2)-Y(1),Z(2)-Z(1)];
-%         ev=ev/norm(ev);
 %         quiver3(vertex_m(v1idx,1),vertex_m(v1idx,2),vertex_m(v1idx,3),...
 %             ev(1),ev(2),ev(3),'b','LineWidth',1);
-         scatter3(X(1),Y(1),Z(1),color(border_l==bli),'filled');
+%          scatter3(X,Y,Z,color(border_l==bli),'filled');
     end
     %     e_bli=e_hb(p(e_hb(:,1))==bli,:);
     %     e_bli_n=size(e_bli,1);

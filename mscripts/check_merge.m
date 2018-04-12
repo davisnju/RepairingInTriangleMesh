@@ -8,6 +8,7 @@ for i=1:n
     d=norm(vs(cb_idx(i),:)-v);
     if d < th && d < dis
          merge_to_idx=cb_idx(i);
+         dis=d;
     end
 end
 

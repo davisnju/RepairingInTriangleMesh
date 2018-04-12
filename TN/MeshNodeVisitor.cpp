@@ -34,7 +34,10 @@ void CMeshNodeVisitor::apply(Geode &geode)
                 for (unsigned int m = 0; m < indexNum; m++)
                 {
                     m_TriPoints->push_back(va->at(deui->at(m)));//获取索引位置的顶点  
-                    m_TriTexCoordArray->push_back(tex->at(deui->at(m)));//获取索引位置的纹理坐标
+                    if (NULL != tex)
+                    {
+                        m_TriTexCoordArray->push_back(tex->at(deui->at(m)));//获取索引位置的纹理坐标
+                    }
                 }
             }
             else

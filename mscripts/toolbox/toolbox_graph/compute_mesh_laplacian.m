@@ -1,4 +1,4 @@
-function L = compute_mesh_weight(vertex,face,type,options)
+function L = compute_mesh_laplacian(vertex,face,type,options)
 
 % compute_mesh_laplacian - compute a laplacian matrix
 %

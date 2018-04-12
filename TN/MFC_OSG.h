@@ -159,6 +159,8 @@ public:
     osg::ref_ptr<osg::Geode> createTr(osg::ref_ptr<osg::Vec3Array> vertex,
                                       osg::ref_ptr<osg::Vec4Array> vertex_color,
                                       osg::ref_ptr<osg::Vec3Array> normal);
+    void addPatch(CString & patch_file);
+    void addBorder();
 private:
 
     CEventHandler* m_eventHandler;

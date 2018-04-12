@@ -75,6 +75,9 @@
     <ClCompile Include="osg_utils.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="HoleDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClassView.h">
@@ -144,6 +147,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="data_def.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="HoleDlg.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,34 +1,54 @@
-%% show patch
-figure(25);
-% clf;
+%% show hole
+
+face_o=outer_surface;
+fn=size(face_o,1);
+face_bottom=[];
+face_top=[];
+nv=size(vertex_m,1);
+ol=zeros(nv,1); %on surface
+z_th=0.;
+for i=1:fn
+    if ~(vertex_m(face_o(i,1),3)>z_th || vertex_m(face_o(i,2),3)>z_th ...
+            || vertex_m(face_o(i,3),3)>z_th)
+% bunny
+%     if vertex_m(face_o(i,1),1)>0 && vertex_m(face_o(i,1),2)>0.1 ...
+%         ||vertex_m(face_o(i,1),1)>-0.02 && vertex_m(face_o(i,1),2)>0.15 ...
+%         ||vertex_m(face_o(i,1),1)>0.02 && vertex_m(face_o(i,1),2)>0.05
+        
+        
+        face_bottom=[face_bottom;face_o(i,:)]; 
+    else
+        face_top=[face_top;face_o(i,:)]; 
+    end
+end
+%%
+figure(20);
+hold off
 % subplot(2,1,2)
-trisurf(outer_surface,vertex_m(:,1),vertex_m(:,2),vertex_m(:,3),...
-'facecolor','b');
+trisurf(face_bottom,vertex_m(:,1),vertex_m(:,2),vertex_m(:,3),...
+'facecolor','black');
 
 grid off
 hold on
-trisurf(face_patch,vertex_m(:,1),vertex_m(:,2),vertex_m(:,3),...
-    'facecolor','y');
+% trisurf(face_o,vertex_m(:,1),vertex_m(:,2),vertex_m(:,3));
+trisurf(face_top,vertex_m(:,1),vertex_m(:,2),vertex_m(:,3),...
+    'facecolor','b');
 
 % axis([-2 2 -2 2 -2 2]);
 % axis([-15 15 -15 15 -2 12]);
-% view([0 90])
-% view([-160 40])
+
+% view([-90 80])
 % view(2)
 %  view([70 5])
+% view([-160 40])
+% view(2)
 xlabel('x');
 ylabel('y');
 zlabel('z');
 title(['loop idx=' num2str(loop_i)])
-% trisurf(face_patch,vertex_m(:,1),vertex_m(:,2),vertex_m(:,3));
-% return;% test31c
-% ======test31c island
-%  face_patch=[   face_patch; 49 95 69];
- return;
-% ======
+trisurf(face_patch,vertex_m(:,1),vertex_m(:,2),vertex_m(:,3));
 hold on;
-color=['r','g','b','y','m','c','w','k'];
-
+color=['r','g','y','m','c','w','b','k'];
 if isempty(border_l)
     return; 
 end
@@ -48,12 +68,12 @@ for i=1:border_num
             vertex_m(v2idx,2);];
         Z=[vertex_m(v1idx,3);
             vertex_m(v2idx,3);];
+        ev=[X(2)-X(1),Y(2)-Y(1),Z(2)-Z(1)];
+        ev=ev/norm(ev);
         plot3(X,Y,Z,color(border_l==bli));
-%         ev=[X(2)-X(1),Y(2)-Y(1),Z(2)-Z(1)];
-%         ev=ev/norm(ev);
 %         quiver3(vertex_m(v1idx,1),vertex_m(v1idx,2),vertex_m(v1idx,3),...
 %             ev(1),ev(2),ev(3),'b','LineWidth',1);
-         scatter3(X(1),Y(1),Z(1),color(border_l==bli),'filled');
+         scatter3(X,Y,Z,color(border_l==bli),'filled');
     end
     %     e_bli=e_hb(p(e_hb(:,1))==bli,:);
     %     e_bli_n=size(e_bli,1);

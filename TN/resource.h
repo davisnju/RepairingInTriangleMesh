@@ -86,6 +86,7 @@
 #define IDS_EDIT_MENU                   306
 #define IDD_DIALOG_ADDlABELPROP         310
 #define IDD_DIALOG_MODEL                311
+#define IDD_DIALOG_NO_HOLE              312
 #define IDC_EDIT_PNAME                  1001
 #define IDC_EDIT_PVALUE                 1002
 #define IDC_LIST_ITEM                   1003
@@ -105,20 +106,31 @@
 #define ID_LOCATE_NODE                  12795
 #define ID_RECTIFY_H                    12797
 #define ID_SAVE_NODE                    12799
-#define ID_ACCELERATOR12801             12801
+#define ID_12802                        12802
 #define ID_LABEL_ADDPROP                12803
 #define ID_SCENE_SAVE                   12804
 #define ID_LABEL_EDITPROP               12805
+#define ID_MODEL_REPAIR                 12806
+#define ID_12807                        12807
+#define ID_12808                        12808
+#define ID_HOLE_                        12809
 #define ID_LABEL_DEL                    12810
 #define ID_LABEL_DELPROP                12811
 #define ID_OSG_TN                       12812
+#define ID_HOLE_REPAIR                  12813
+#define ID_HOLE_RECONG                  12814
+#define ID_12815                        12815
+#define ID_Menu                         12816
+#define ID_12817                        12817
+#define ID_MODEL_CHECK                  12818
+#define ID_PATCH_SMOOTH                 12819
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        312
-#define _APS_NEXT_COMMAND_VALUE         12802
+#define _APS_NEXT_RESOURCE_VALUE        313
+#define _APS_NEXT_COMMAND_VALUE         12824
 #define _APS_NEXT_CONTROL_VALUE         1006
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

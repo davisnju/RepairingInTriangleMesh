@@ -5,6 +5,6 @@ n=cross(v1,v2);
 if sum(abs(n))>0
     n=n/norm(n);
 else
-    n=[];
+    n=[0 0 0];
 end
 end

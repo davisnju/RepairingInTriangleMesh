@@ -30,18 +30,7 @@ public:
 
     void CNaviManipulator::setCenter(const double eventTimeDelta, const double dx, const double dy);
 
-    virtual bool handle(const GUIEventAdapter& ea, GUIActionAdapter& us)
-    {
-        if (naviMode != NAVI_MODE_SELECT)
-        {
-            return OrbitManipulator::handle(ea, us);
-        }
-        else
-        {
-            // ä¯ÀÀ-Ñ¡ÔñÄ£Ê½
-            return pick(ea,us);
-        }
-    };
+    virtual bool handle(const GUIEventAdapter& ea, GUIActionAdapter& us);
 
     virtual void setRotationMode(RotationMode mode);
     RotationMode getRotationMode() const;
@@ -63,11 +52,11 @@ protected:
     bool pick(const GUIEventAdapter& ea, GUIActionAdapter& us);
 
     ref_ptr<Node> createFrame(const Vec3& MP, const Vec3& MR);
-    bool isNodeInRect(Vec3 center, Vec3d MousePush, Vec3d MouseRelease);
+    bool isNodeInRect(Vec3 center, float radius, Vec3d MousePush, Vec3d MouseRelease);
     void pickNode(Group* root, Group* mg);
     void getMeshInRect(Group* root, Vec3d m_MousePush, Vec3d m_MouseRelease);
     int getNumInRect(ref_ptr<Vec3Array> triPoints, ref_ptr<Vec3Array> rect, std::vector<int>& triIndex);
-    Node* creatMesh(ref_ptr<Vec3Array> triPointsInRect, ref_ptr<Vec2Array> triTexInRect);
+    ref_ptr<Node> creatMesh(ref_ptr<Vec3Array> triPointsInRect, ref_ptr<Vec2Array> triTexInRect);
     bool isInRect(ref_ptr<Vec3Array> oneTriPoints, ref_ptr<Vec3Array> rect);
     float getMaxZ(ref_ptr<Vec3Array> points);
     void addPoint(Group* root, Vec3 position, int num);

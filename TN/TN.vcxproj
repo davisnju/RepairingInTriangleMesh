@@ -14,6 +14,7 @@
     <ClCompile Include="ClassView.cpp" />
     <ClCompile Include="findNodeVisitor.cpp" />
     <ClCompile Include="EventHandler.cpp" />
+    <ClCompile Include="HoleDlg.cpp" />
     <ClCompile Include="LabelEditor.cpp" />
     <ClCompile Include="light.cpp" />
     <ClCompile Include="MainFrm.cpp" />
@@ -35,6 +36,7 @@
   <ItemGroup>
     <ClInclude Include="data_def.h" />
     <ClInclude Include="findNodeVisitor.h" />
+    <ClInclude Include="HoleDlg.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="MeshNodeVisitor.h" />
     <ClInclude Include="ModelDlg.h" />
