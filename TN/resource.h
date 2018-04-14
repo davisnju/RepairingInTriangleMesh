@@ -124,13 +124,16 @@
 #define ID_12817                        12817
 #define ID_MODEL_CHECK                  12818
 #define ID_PATCH_SMOOTH                 12819
+#define ID_Menu12824                    12824
+#define ID_Menu_                        12825
+#define ID_MODEL_CUT                    12826
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        313
-#define _APS_NEXT_COMMAND_VALUE         12824
+#define _APS_NEXT_COMMAND_VALUE         12827
 #define _APS_NEXT_CONTROL_VALUE         1006
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

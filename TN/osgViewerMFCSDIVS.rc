@@ -219,16 +219,17 @@ BEGIN
         MENUITEM "旋转模型 (&R)\tCtrl+Atl+R",       ID_OSG_ROTATE
         MENUITEM "移动模型 (&T)\tCtrl+Atl+T",       ID_OSG_TRANS
         MENUITEM "缩放模型 (&Z)\tCtrl+Atl+Z",       ID_OSG_SCALE
+        MENUITEM "裁剪模型 (&C)\tCtrl+Atl+C",       ID_MODEL_CUT
         MENUITEM SEPARATOR
         MENUITEM "水平校正 (&H)",                   ID_RECTIFY_H
         MENUITEM "保存节点 (&S)",                   ID_SAVE_NODE
         MENUITEM SEPARATOR
-        POPUP "非封闭孔洞修补"
+        POPUP "非封闭模型孔洞修补"
         BEGIN
             MENUITEM "识别",                          ID_HOLE_RECONG
             MENUITEM "修补",                          ID_HOLE_REPAIR
         END
-        POPUP "封闭孔洞修补"
+        POPUP "封闭模型孔洞修补"
         BEGIN
             MENUITEM "识别",                          ID_MODEL_CHECK
             MENUITEM "修补",                          ID_MODEL_REPAIR
@@ -653,6 +654,11 @@ BEGIN
     ID_LABEL_EDITPROP       "非封闭三角网格孔洞修补\n孔洞修补"
     ID_LABEL_DEL            "非封闭三角网格模型孔洞识别\n孔洞识别"
     ID_LABEL_DELPROP        "删除选中的属性\n删除属性"
+END
+
+STRINGTABLE
+BEGIN
+    ID_MODEL_CUT            "裁剪以获取顶点和三角形信息\n裁剪"
 END
 
 #endif    // 中文(简体，中国) resources

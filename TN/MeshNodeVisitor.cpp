@@ -10,6 +10,9 @@
 
 void CMeshNodeVisitor::apply(Geode &geode)
 {
+    //计算当前geode节点对应的世界变换矩阵，用来计算geode中顶点对应的世界坐标
+    osg::Matrix geodeMatrix = osg::computeLocalToWorld(getNodePath());
+
     unsigned int drwnum = geode.getNumDrawables();
     for (unsigned int i = 0; i < drwnum; i++)
     {
@@ -33,7 +36,7 @@ void CMeshNodeVisitor::apply(Geode &geode)
                 const unsigned indexNum = deui->getNumIndices(); //indexNum获取了索引的个数  216
                 for (unsigned int m = 0; m < indexNum; m++)
                 {
-                    m_TriPoints->push_back(va->at(deui->at(m)));//获取索引位置的顶点  
+                    m_TriPoints->push_back(va->at(deui->at(m))*geodeMatrix);//获取索引位置的顶点  
                     if (NULL != tex)
                     {
                         m_TriTexCoordArray->push_back(tex->at(deui->at(m)));//获取索引位置的纹理坐标

@@ -171,9 +171,13 @@ void cOSG::InitOSG(CString initModelName)
 
         ref_ptr<Node> axixModel = createAxis();
         axixModel->setName("AXIS");
+
+#ifdef ADD_AXIS
         mRoot->addChild(axixModel);
         cstr = axixModel->getName().c_str();
         app->insertNodeName(cstr);
+#endif
+
         //mRoot->addChild(mesh);
 
     }
@@ -231,10 +235,12 @@ void cOSG::InitSceneGraph(void)
 
     ref_ptr<Node> axixModel = createAxis();
     axixModel->setName("AXIS");
+
+#ifdef ADD_AXIS
     mRoot->addChild(axixModel);
     cstr = axixModel->getName().c_str();
     app->insertNodeName(cstr);
-
+#endif
     // ÃÌº”π‚‘¥
     osg::ref_ptr<osg::StateSet> stateset = mRoot->getOrCreateStateSet();
     stateset->setMode(GL_LIGHTING, osg::StateAttribute::ON);

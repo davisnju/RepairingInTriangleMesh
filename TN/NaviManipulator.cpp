@@ -12,6 +12,7 @@
 #include "TNApp.h"
 #include "MainFrm.h"
 #include "TNDoc.h"
+#include "TNView.h"
 
 using namespace osg;
 using namespace osgGA;
@@ -509,6 +510,7 @@ bool CNaviManipulator::pick(const GUIEventAdapter& ea, GUIActionAdapter& us)
                 }
 
             }
+            return true;
         }
         break;
     case GUIEventAdapter::DRAG:
@@ -577,7 +579,8 @@ bool CNaviManipulator::pick(const GUIEventAdapter& ea, GUIActionAdapter& us)
                 Group* fg = NULL;
                 bool findFrame = false;
                 int rootChildNum = root->getNumChildren();
-                for (int i = 0; i < rootChildNum; i++)
+                int i = 0;
+                for (; i < rootChildNum; i++)
                 {
                     fg = dynamic_cast<Group*>(root->getChild(i));
                     if (fg == NULL)continue;
@@ -597,6 +600,7 @@ bool CNaviManipulator::pick(const GUIEventAdapter& ea, GUIActionAdapter& us)
                 }
                 else
                 {
+                    root->removeChild(i);
                     // 获取选框内的三角网格模型
                     ref_ptr<Group> mdg = NULL;
                     for (int i = 0; i < rootChildNum; i++)
@@ -606,6 +610,13 @@ bool CNaviManipulator::pick(const GUIEventAdapter& ea, GUIActionAdapter& us)
                         if (mdg->getName() == "Model")
                         {
                             getMeshInRect(mdg, m_MousePush, m_MouseRelease);
+
+
+                            // 加载场景
+                            //CMainFrame* pFrame = (CMainFrame*)AfxGetApp()->GetMainWnd();
+                            //CTNView* view = (CTNView*)pFrame->GetActiveView();
+                            //view->loadScene(L"D:/OSG/Production_1/Data/meshSelected.osgb");
+
                             break;
                         }
                     }
@@ -663,10 +674,10 @@ ref_ptr<Node> CNaviManipulator::createFrame(const Vec3& MP, const Vec3& MR)
     //首先定义四个点  
     ref_ptr<Vec3Array> v = new Vec3Array();//定义一个几何体坐标集合  
     Vec3 MP1(MP), MPR(MP), MR1(MR), MRP(MR);
-    MP1.set(MP.x(), MP.y(), 0.);
-    MPR.set(MP.x(), MR.y(), 0.);
-    MR1.set(MR.x(), MR.y(), 0.);
-    MRP.set(MR.x(), MP.y(), 0.);
+    MP1.set(MP.x(), MP.y(), 0.3);
+    MPR.set(MP.x(), MR.y(), 0.3);
+    MR1.set(MR.x(), MR.y(), 0.3);
+    MRP.set(MR.x(), MP.y(), 0.3);
     v->push_back(MP1);//左下角坐标点  
     v->push_back(MPR);//右下角坐标点  
     v->push_back(MR1);//右上角坐标点  
@@ -674,10 +685,10 @@ ref_ptr<Node> CNaviManipulator::createFrame(const Vec3& MP, const Vec3& MR)
     geom->setVertexArray(v.get());//将坐标设置到几何体节点中  
     //定义颜色数组  
     ref_ptr<Vec4Array> c = new Vec4Array();//定义一个颜色数组颜色  
-    c->push_back(Vec4(1.0, 0.0, 0.0, 0.3));//数组的四个参数分别为RGBA，其中A表示透明度  
-    c->push_back(Vec4(1.0, 0.0, 0.0, 0.3));
-    c->push_back(Vec4(1.0, 0.0, 0.0, 0.3));
-    c->push_back(Vec4(1.0, 0.0, 0.0, 0.3));
+    c->push_back(Vec4(0.0, 1.0, 1.0, 0.3));//数组的四个参数分别为RGBA，其中A表示透明度  
+    c->push_back(Vec4(0.0, 1.0, 1.0, 0.3));
+    c->push_back(Vec4(0.0, 1.0, 1.0, 0.3));
+    c->push_back(Vec4(0.0, 1.0, 1.0, 0.3));
     geom->setColorArray(c.get());//与几何体中进行关联  
     geom->setColorBinding(Geometry::BIND_PER_VERTEX);//设置绑定方式为逐点绑定。  
     //定义法线  
@@ -690,7 +701,7 @@ ref_ptr<Node> CNaviManipulator::createFrame(const Vec3& MP, const Vec3& MR)
     //TRIANGLES,TRIANGLE_STRIP,TRIANGLE_FAN,QUADS,QUAD_STRIP,POLYGON  
     geom->addPrimitiveSet(
         new DrawArrays(PrimitiveSet::LINE_LOOP, 0, 4));
-
+    geom->getOrCreateStateSet()->setAttribute(new LineWidth(2), StateAttribute::ON);
     ref_ptr<Geode> geode = new Geode;
     geode->addDrawable(geom);
     return geode;

@@ -4,7 +4,7 @@ clear;clc;
 load ball_mesh300.mat
 z_max=max(vertex(:,3));
 z_min=min(vertex(:,3));
-z_th=z_min+0.99*(z_max-z_min);  %% 84
+z_th=z_min+0.84*(z_max-z_min);  %% 84
 
 fn=size(face,1);
 face_bottom=[];
@@ -74,4 +74,4 @@ adj_list = adjmatrix2list(A);
 
 %%
 % write_ply(vertex_m,face_patch,'res\bunny_repaired.ply');
-border_vertex=vertex_m(border_vid{5},:);
+% border_vertex=vertex_m(border_vid{5},:);

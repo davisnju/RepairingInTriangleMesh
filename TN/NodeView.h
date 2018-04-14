@@ -26,6 +26,11 @@ public:
 
     void clearNodeTree()
     {
+        if (!m_wndNodeViewTree)
+        {
+            return;
+        }
+        
         m_wndNodeViewTree.DeleteAllItems();
     };
 

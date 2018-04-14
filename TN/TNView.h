@@ -91,6 +91,7 @@ public:
     afx_msg void OnModelCheck();
     afx_msg void OnModelRepair();
     afx_msg void OnPatchSmooth();
+    afx_msg void OnModelCut();
 };
 
 #ifndef _DEBUG  // TNView.cpp 中的调试版本

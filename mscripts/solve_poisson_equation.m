@@ -1,5 +1,53 @@
 % solve poisson equation
 
+%% 
+load res\test3-2\m0414.mat
+
+vids=sort(unique(face_patch(:)));
+vertex=vertex_m(vids,:);
+nvert=size(vertex,1);
+nface=size(face_patch,1);
+nbv=length(v_hb_idx);
+face=zeros(nface,3);
+for i=1:nface
+    face(i,:)=[find(vids==face_patch(i,1)) ...
+        find(vids==face_patch(i,2)) ...
+        find(vids==face_patch(i,3))];
+end
+border_idx=zeros(size(v_hb_idx));
+for i=1:nbv
+    border_idx(i)=find(vids==v_hb_idx(i));
+end
+isborder=zeros(nvert,1);
+isborder(border_idx)=1;
+
+vertex_rot2=vertex_rot;
+vertex_rot=vertex;
+for i=1:nvert
+    vertex_rot(i,:)=vertex_rot2(vids(i),:);
+end
+%
+figure(28);
+clf;
+subplot(1,2,1)
+hold off
+trisurf(face,vertex(:,1),vertex(:,2),vertex(:,3),...
+    'facecolor','b');
+axis([-1 1 -1 1 0 1]);
+grid off
+subplot(1,2,2)
+for i=1:nface    
+    trisurf([1 2 3],vertex_face(i,:,1),vertex_face(i,:,2),vertex_face(i,:,3),...
+        'facecolor','r');
+    hold on
+end
+grid off
+axis([-1 1 -1 1 0 1]);
+xlabel('x');
+ylabel('y');
+zlabel('z');
+
+%%
 nv=size(vertex_m,1);
 pvn=patch_v_num;     % new vertex num
 
@@ -30,10 +78,6 @@ face_ref_idx=unique(face_ref_idx);
 face_ref=face_m(face_ref_idx,:);
 face_ref_num=size(face_ref,1);
 %%
-
-% h guidance field
-h=vertex_rot-vertex_m;
-
 %% grad
 grad_face=zeros(face_n,3,3);
 for i=1:face_n
@@ -46,7 +90,8 @@ for i=1:face_n
     vij=vs(2,:)-vs(1,:);
     vik=vs(3,:)-vs(1,:);
     nf=cross(vij,vik);
-    nf=nf/norm(nf);
+    d=norm(nf);d=max(d,eps);
+    nf=nf/d;
     a=area_tri(vs(1,:),vs(2,:),vs(3,:));
     for xyz=1:3  %three v for fi
         grad_face(i,xyz,:)=[0 0 0];
@@ -107,44 +152,26 @@ for i=1:nv
         end
     end
 end
-%
+%%
 % calc b
 b=divergence_pb;
 %% calc A
 %L = compute_mesh_weight(vertex,face,type,options)
 clear option
 type='conformal';
-Laplace_w = compute_mesh_laplacian(vertex_m,face_m,type,options); % cot wij
+options.symmetrize=1;
+options.normalize=0;
+A = compute_mesh_laplacian(vertex_p,face_p,type,options); % use cot wij
 
 %%
 vx=zeros(nv,3);
 flags=[0 0 0];
+% Ax
+Ax=zeros(nv,nv);
+
+SAx=sparse(Ax);
+
 for coord=1:3
-    % Ax  bvnxpvn% 2.7
-    Ax=zeros(nv,nv);
-%     for i=1:nv
-%         vid=i;%vertex_id_ref(i);
-%         neighbor_idx=adj_list_aa{vid};
-%         nn=length(neighbor_idx);
-%         vi=vertex_m(vid,:);
-%         for j=1:nn
-%             neighbor_idx2=adj_list_aa{neighbor_idx(j)};
-%             t2=intersect(neighbor_idx,neighbor_idx2);
-%             if length(t2)<2
-%                 disp('err');
-%                 break;
-%             end
-%             vj=vertex_m(neighbor_idx(j),:);
-%             v1=vertex_m(t2(1),:);
-%             v2=vertex_m(t2(2),:);
-%             alphaij=vec3theta(vj-v1,vi-v1);
-%             betaij=vec3theta(vj-v2,vi-v2);
-%             dfvi=0.5*(cot(alphaij)+cot(betaij))*(vi(coord)-vj(coord));
-%             vjid=neighbor_idx(j);%find(vertex_id_ref==neighbor_idx(j));
-%             Ax(i,vjid)=0.5*(cot(alphaij)+cot(betaij));
-%         end
-%     end
-    SAx=sparse(Ax);
     % solve poisson equation
     % ================ solve x ==========================
     [x,flag]=gmres(SAx,b(:,coord),40,1e-7,1000);

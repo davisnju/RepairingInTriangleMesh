@@ -76,6 +76,7 @@ trisurf(face_o,vertex_m(:,1),vertex_m(:,2),vertex_m(:,3),...
 hold on
 grid off
 vertex_rot=vertex_m;
+vertex_face=zeros(patch_face_num,3,3);
 for i=1:patch_face_num
     
     c=patch_face_c(i,:);
@@ -94,6 +95,10 @@ for i=1:patch_face_num
     
     vertex_r=vl*R'+c;        
     vertex_rot(face_patch(i,:),:)=vertex_r;
+    
+    vertex_face(i,1,:)=vertex_r(1,:);
+    vertex_face(i,2,:)=vertex_r(2,:);
+    vertex_face(i,3,:)=vertex_r(3,:);
     
     tri_v=vertex_r;
     trisurf([1 2 3],tri_v(:,1),tri_v(:,2),tri_v(:,3),...

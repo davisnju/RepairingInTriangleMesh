@@ -49,6 +49,7 @@ BEGIN_MESSAGE_MAP(CTNView, CView)
     ON_COMMAND(ID_MODEL_CHECK, &CTNView::OnModelCheck)
     ON_COMMAND(ID_MODEL_REPAIR, &CTNView::OnModelRepair)
     ON_COMMAND(ID_PATCH_SMOOTH, &CTNView::OnPatchSmooth)
+    ON_COMMAND(ID_MODEL_CUT, &CTNView::OnModelCut)
 END_MESSAGE_MAP()
 
 void sendBuildString(CString cstr)
@@ -551,4 +552,10 @@ void CTNView::OnPatchSmooth()
 {
     // TODO:  在此添加命令处理程序代码
     AfxMessageBox(L"OnPatchSmooth");
+}
+
+
+void CTNView::OnModelCut()
+{
+    // TODO:  在此添加命令处理程序代码
 }

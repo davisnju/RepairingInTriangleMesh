@@ -27,7 +27,7 @@ zlabel('z');
 % title(['loop idx=' num2str(loop_i)])
 
 
-title(['iter ' num2str(i)])
+% title(['iter ' num2str(i)])
 hold off
 
 end
